@@ -77,7 +77,7 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" })
         }
 
-        // Then check if password is correct
+        // Then check if password is correct (after user exists, thus user.password will be never null while comparing using bcrypt)
         const passwordCorrect = await bcrypt.compare(password, user.password)
 
         if (!passwordCorrect) {
@@ -107,6 +107,51 @@ const loginUser = async (req, res) => {
 
 
 
+// Logout a user
+
+const logoutUser = async (req, res) => {
+    try {
+
+        // set the cookie to an empty string and set the maxAge to 0
+        res.cookie('jwt', '', {
+            maxAge: 0,
+        })
+
+        res.status(200).json({ message: "User logged out" })
+
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+        console.log("Error from logoutUser controller: ", err.message)
+    }
+}
+
+
+
+
+// Follow and Unfollow a user
+
+const followUnFollowUser = async (req, res) => {
+    try {
+
+        const { id } = req.params
+
+        // user who is being followed or unFollowed
+        const userToModify = await User.findById(id)
+        // user who is following or unFollowing (user who is logged in)
+        const currentUser = await User.findById(req.user._id)
+        
+
+
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+        console.log("Error from followUnFollowUser controller: ", err.message)
+    }
+}
+
+
+
+
+
 
 
 
@@ -117,4 +162,6 @@ const loginUser = async (req, res) => {
 module.exports = {
     signupUser,
     loginUser,
+    logoutUser,
+    followUnFollowUser,
 }
