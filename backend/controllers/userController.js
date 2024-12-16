@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs")
 const generateTokenAndSetCookie = require("../utils/helpers/generateTokenAndSetCookie")
 
 
+
+// Signup a new user
 const signupUser = async (req, res) => {
     try {
         const { name, email, password } = req.body
@@ -42,7 +44,6 @@ const signupUser = async (req, res) => {
                 _id: newUser._id,
                 name: newUser.name,
                 email: newUser.email,
-                profilePic: newUser.profilePic,
                 followers: newUser.followers,
                 following: newUser.following,
                 bio: newUser.bio,
@@ -64,6 +65,45 @@ const signupUser = async (req, res) => {
 
 
 
+// Login a user
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body
+
+        // First check if the user exists
+        const user = await User.findOne({email})
+        
+        if (!user) {
+            return res.status(400).json({ message: "Invalid email or password" })
+        }
+
+        // Then check if password is correct
+        const passwordCorrect = await bcrypt.compare(password, user.password)
+
+        if (!passwordCorrect) {
+            return res.status(400).json({ message: "Invalid email or password" })
+        }
+
+        // If both checks pass, generate token and send response
+        generateTokenAndSetCookie(user._id, res)
+
+        res.status(200).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            followers: user.followers,
+            following: user.following,
+            bio: user.bio,
+        })
+
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+        console.log("Error from loginUser controller: ", err.message)
+    }
+}
+
+
+
 
 
 
@@ -76,4 +116,5 @@ const signupUser = async (req, res) => {
 // export all the functions
 module.exports = {
     signupUser,
+    loginUser,
 }
