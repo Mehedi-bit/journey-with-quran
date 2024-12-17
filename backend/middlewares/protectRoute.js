@@ -18,7 +18,7 @@ const protectRoute = async (req, res, next) => {
         // userId was set as a payload in the token in the generateTokenAndSetCookie function
         const user = await User.findById(decoded.userId).select('-password')
 
-        // set the user in the request object so that we can access the user in the controller (for ex: userController/followUnFollowUser function)
+        // set the user in the request object so that we can access the user in the controller (for ex: userController/followUnFollowUser or updateProfile functions)
         req.user = user 
 
         next()

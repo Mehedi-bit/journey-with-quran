@@ -12,12 +12,11 @@ const app = express();
 
 const port = process.env.PORT || 5000;
 
-// Middleware for parsing JSON bodies (req.body)
-app.use(express.json());
-// Middleware for parsing URL encoded bodies (form data in req.body)
-app.use(express.urlencoded({ extended: true })); 
-// Middleware for parsing cookies (get the cookies from the request headers and set the cookies in the response)
-app.use(cookieParser())
+
+// Middlewares
+app.use(express.json());  // Parse JSON bodies (req.body)
+app.use(express.urlencoded({ extended: true }));  // Parse URL encoded bodies (form data in req.body)
+app.use(cookieParser())  // Parse cookies (get the cookies from the request headers and set the cookies in the response)
 
 
 // Basic route
