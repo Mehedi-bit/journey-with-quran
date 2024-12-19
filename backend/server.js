@@ -16,17 +16,18 @@ const port = process.env.PORT || 5000;
 // Middlewares
 app.use(express.json());  // Parse JSON bodies (req.body)
 app.use(express.urlencoded({ extended: true }));  // Parse URL encoded bodies (form data in req.body)
-app.use(cookieParser())  // Parse cookies (get the cookies from the request headers and set the cookies in the response)
+app.use(cookieParser())  // For reach and access the cookies
 
 
 // Basic route
 app.get('/', (req, res) => {
-  res.send('Hi There!');
+  res.send('Salam from Journey with Quran!');
 });
 
 
 // Routes
 app.use('/api/users', userRoutes)
+app.use('/api/posts', postRoutes)
 
 
 

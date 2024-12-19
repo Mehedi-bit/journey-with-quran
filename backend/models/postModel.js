@@ -42,9 +42,9 @@ const postSchema = mongoose.Schema({
                 type: String
             },
 
-            // username: {
-            //     type: String
-            // },
+            username: {
+                type: String
+            },
 
             name: {
                 type: String 

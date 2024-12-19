@@ -1,6 +1,7 @@
 const User = require("../models/userModel")
 const bcrypt = require("bcryptjs")
 const generateTokenAndSetCookie = require("../utils/helpers/generateTokenAndSetCookie")
+const { default: mongoose } = require("mongoose")
 
 
 
@@ -12,11 +13,21 @@ const generateTokenAndSetCookie = require("../utils/helpers/generateTokenAndSetC
 // Get a user profile
 const getUserProfile = async (req, res) => {
 
-    const { id } = req.params
+    // We will fetch user profile either with username or id
+	// query is either username or userId
+    const { query } = req.params
 
     try {
 
-        const user = await User.findById(id).select('-password').select('-__v').select('-updatedAt').select('-email')
+        let user
+
+        // if the query is id/valid id then find the user by id
+        if (mongoose.Types.ObjectId.isValid(query)) {
+            user = await User.findOne({_id: query}).select('-password').select('-__v').select('-updatedAt')
+        } else {
+            // else query is username, then  find the user by username
+            user = await User.findOne({username: query}).select('-password').select('-__v').select('-updatedAt')
+        }
 
         if (!user) return res.status(404).json({ message: "User not found" })
 
@@ -41,10 +52,17 @@ const getUserProfile = async (req, res) => {
 // Signup a new user
 const signupUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body
+        const { name, email, username, password } = req.body
 
-        // Check if the user already exists (if the email is already in the database)
-        const userExists = await User.findOne({email})
+        // Check if the user already exists (if the email or username is already in the database)
+        const userExists = await User.findOne(
+            {
+                $or: [
+                    {email: email},
+                    {username: username}
+                ]
+            }
+        )
 
         if (userExists) {
             return res.status(400).json({ message: "User already exists" })
@@ -60,7 +78,8 @@ const signupUser = async (req, res) => {
         const newUser = new User({
             name,
             email,
-            password: hashedPassword
+            username,
+            password: hashedPassword,
         })
 
         
@@ -78,6 +97,7 @@ const signupUser = async (req, res) => {
                 _id: newUser._id,
                 name: newUser.name,
                 email: newUser.email,
+                username: newUser.username,
                 followers: newUser.followers,
                 following: newUser.following,
                 bio: newUser.bio,
@@ -102,20 +122,26 @@ const signupUser = async (req, res) => {
 // Login a user
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body
+        const { password } = req.body
+        const emailOrUsername = req.body.email || req.body.username
 
-        // First check if the user exists
-        const user = await User.findOne({email})
+        // First find the user and check if the user exists
+        const user = await User.findOne({
+            $or: [
+                {email: emailOrUsername},
+                {username: emailOrUsername}
+            ]
+        })
         
         if (!user) {
-            return res.status(400).json({ message: "Invalid email or password" })
+            return res.status(400).json({ message: "Invalid credentials" })
         }
 
         // Then check if password is correct (after user exists, thus user.password will be never null while comparing using bcrypt)
         const passwordCorrect = await bcrypt.compare(password, user.password)
 
         if (!passwordCorrect) {
-            return res.status(400).json({ message: "Invalid email or password" })
+            return res.status(400).json({ message: "Invalid credentials" })
         }
 
         // If both checks pass, generate token and send response
@@ -125,9 +151,11 @@ const loginUser = async (req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            username: user.username,
             followers: user.followers,
             following: user.following,
             bio: user.bio,
+            profilePic: user.profilePic,
         })
 
     } catch (err) {
@@ -151,7 +179,7 @@ const logoutUser = async (req, res) => {
             maxAge: 0,
         })
 
-        res.status(200).json({ message: "User logged out" })
+        res.status(200).json({ message: "User logged out successfully" })
 
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -169,60 +197,74 @@ const followUnFollowUser = async (req, res) => {
 
         const { id } = req.params
 
-        // user who is being followed or unFollowed
-        const userToModify = await User.findById(id)
-        // user who is following or unFollowing (user who is logged in)
-        const currentUser = await User.findById(req.user._id)
-
-        // check if the the user trying to follow or unFollow is the same as the user who is logged in
+        // check if trying to self-follow
         if (id === req.user._id.toString()) {
             return res.status(400).json({ message: "You cannot follow or unfollow yourself" })
         }
 
-        // check if the userToModify or currentUser exists
-        if (!userToModify || !currentUser) {
-            return res.status(404).json({ message: "User not found" })
+
+        // Start a session for transaction
+        const session = await User.startSession()
+        session.startTransaction()
+
+
+        try {
+            // Fetch both users in one go with only necessary fields and with the session
+            // Fetching data in parallel, reducing overall execution time
+            const [userToModify, currentUser] = await Promise.all([
+                User.findById(id).select('followers').session(session),
+                User.findById(req.user._id).select('following').session(session)
+            ])
+
+
+            // check if the userToModify or currentUser exists
+            if (!userToModify || !currentUser) {
+                return res.status(404).json({ message: "User not found" })
+            }
+
+
+            // Check if the user is already followed
+            // If already followed, then unFollow the user
+            // -- remove/pull the id from the following array of the currentUser
+            // -- and remove/pull the id from the followers array of the userToModify
+            // Otherwise follow the user
+            // -- add/push the id to the following array of the currentUser
+            // -- and add/push the id to the followers array of the userToModify
+
+            const isAlreadyFollowing = currentUser.following.includes(id)
+            const operation = isAlreadyFollowing? '$pull' : '$push'
+
+            // perform the update operation in parallel to reduce overall execution time
+            await Promise.all([
+                User.findByIdAndUpdate(
+                    {_id: req.user._id},
+                    {[operation]: { following: id }},
+                    {session}
+                ),
+
+                User.findByIdAndUpdate(
+                    {_id: id},
+                    {[operation]: { followers: req.user._id }},
+                    {session}
+                )
+            ])
+
+
+            // Commit the transaction when all operations are successful
+            await session.commitTransaction()
+
+            res.status(200).json({ message: `User ${isAlreadyFollowing? 'unfollowed' : 'followed'} successfully` })
+
+
+
+        } catch (err) {
+            // Rollback the transaction if any error occurs
+            await session.abortTransaction()
+            throw err
+        } finally {
+            // End the session
+            session.endSession()
         }
-
-
-        // check if the user is already followed
-        // if already followed, then unFollow the user
-        // otherwise follow the user
-        if (currentUser.following.includes(id)) {
-            // unFollow the user
-            // remove/pull the id from the following array of the currentUser
-            // and remove/pull the id from the followers array of the userToModify
-            await User.findByIdAndUpdate(
-                {_id: req.user._id},
-                {$pull: {following: id}}
-            )
-
-            await User.findByIdAndUpdate(
-                {_id: id},
-                {$pull: {followers: req.user._id}}
-            )
-            
-            res.status(200).json({ message: "User unFollowed successfully" })
-
-        } else {
-            // follow the user
-            // add/push the id to the following array of the currentUser
-            // and add/push the id to the followers array of the userToModify
-            await User.findByIdAndUpdate(
-                {_id: req.user._id},
-                {$push: {following: id}}
-            )
-
-            await User.findByIdAndUpdate(
-                {_id: id},
-                {$push: {followers: req.user._id}}
-            )
-
-            res.status(200).json({ message: "User followed successfully" })
-        }
-        
-
-
         
 
 
@@ -230,6 +272,8 @@ const followUnFollowUser = async (req, res) => {
         res.status(500).json({ message: err.message })
         console.log("Error from followUnFollowUser controller: ", err.message)
     }
+
+    
 }
 
 

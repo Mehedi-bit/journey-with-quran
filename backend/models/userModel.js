@@ -7,11 +7,11 @@ const userSchema = mongoose.Schema({
         maxLength: 50
     }, 
 
-    // username: {
-    //     type: String,
-    //     unique: true,
-    //     maxLength: 30,
-    // },
+    username: {
+        type: String,
+        unique: true,
+        maxLength: 30,
+    },
 
     email: {
         type: String,
