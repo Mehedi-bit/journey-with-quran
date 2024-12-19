@@ -194,6 +194,11 @@ const logoutUser = async (req, res) => {
 // Follow and UnFollow a user
 
 const followUnFollowUser = async (req, res) => {
+
+    // Start a session to perform both updates in a transaction (both updates should succeed or fail together)
+    // removing from following list of the current user and removing from followers list of the target user
+    const session = await mongoose.startSession()
+
     try {
         const { id } = req.params
 
@@ -202,12 +207,16 @@ const followUnFollowUser = async (req, res) => {
             return res.status(400).json({ message: "You cannot follow or unfollow yourself" })
         }
 
-        // Find both users: the one to follow/unfollow and the current user
-        const userToModify = await User.findById(id)
-        const currentUser = await User.findById(req.user._id)
+        // start a transaction
+        session.startTransaction()
+
+        // Find both users: the one to follow/unFollow and the current user
+        const userToModify = await User.findById(id).session(session)
+        const currentUser = await User.findById(req.user._id).session(session)
 
         // Validate that both users exist
         if (!userToModify || !currentUser) {
+            await session.abortTransaction()
             return res.status(404).json({ message: "User not found" })
         }
 
@@ -215,19 +224,23 @@ const followUnFollowUser = async (req, res) => {
         const isAlreadyFollowing = currentUser.following.includes(id)
         const operation = isAlreadyFollowing ? '$pull' : '$push'  // pull = remove/unfollow, push = add/follow
 
-        // Perform both updates in parallel:
-        // 1. Update current user's following list
-        // 2. Update target user's followers list
-        await Promise.all([
-            User.findByIdAndUpdate(
-                { _id: req.user._id },
-                { [operation]: { following: id } }
-            ),
-            User.findByIdAndUpdate(
-                { _id: id },
-                { [operation]: { followers: req.user._id } }
-            )
-        ])
+        // Perform updates within the transaction
+        await User.findByIdAndUpdate(
+            { _id: req.user._id },
+            { [operation]: { following: id } },
+            { session }
+        );
+
+        await User.findByIdAndUpdate(
+            { _id: id },
+            { [operation]: { followers: req.user._id } },
+            { session }
+        );
+
+
+        // Commit the transaction if everything is successful
+        await session.commitTransaction()
+
 
         // Send success response
         res.status(200).json({ 
@@ -235,8 +248,12 @@ const followUnFollowUser = async (req, res) => {
         })
 
     } catch (err) {
+        // Rollback the transaction if any error occurs
+        await session.abortTransaction()
         res.status(500).json({ message: err.message })
         console.log("Error from followUnFollowUser controller: ", err.message)
+    } finally {
+        session.endSession()
     }
 }
 
