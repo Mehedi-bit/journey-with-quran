@@ -1,7 +1,8 @@
 const User = require("../models/userModel")
 const bcrypt = require("bcryptjs")
 const generateTokenAndSetCookie = require("../utils/helpers/generateTokenAndSetCookie")
-const { default: mongoose } = require("mongoose")
+const mongoose = require("mongoose")
+// const cloudinary = require('cloudinary').v2
 
 
 
@@ -194,86 +195,49 @@ const logoutUser = async (req, res) => {
 
 const followUnFollowUser = async (req, res) => {
     try {
-
         const { id } = req.params
 
-        // check if trying to self-follow
+        // Prevent self-following
         if (id === req.user._id.toString()) {
             return res.status(400).json({ message: "You cannot follow or unfollow yourself" })
         }
 
+        // Find both users: the one to follow/unfollow and the current user
+        const userToModify = await User.findById(id)
+        const currentUser = await User.findById(req.user._id)
 
-        // Start a session for transaction
-        const session = await User.startSession()
-        session.startTransaction()
-
-
-        try {
-            // Fetch both users in one go with only necessary fields and with the session
-            // Fetching data in parallel, reducing overall execution time
-            const [userToModify, currentUser] = await Promise.all([
-                User.findById(id).select('followers').session(session),
-                User.findById(req.user._id).select('following').session(session)
-            ])
-
-
-            // check if the userToModify or currentUser exists
-            if (!userToModify || !currentUser) {
-                return res.status(404).json({ message: "User not found" })
-            }
-
-
-            // Check if the user is already followed
-            // If already followed, then unFollow the user
-            // -- remove/pull the id from the following array of the currentUser
-            // -- and remove/pull the id from the followers array of the userToModify
-            // Otherwise follow the user
-            // -- add/push the id to the following array of the currentUser
-            // -- and add/push the id to the followers array of the userToModify
-
-            const isAlreadyFollowing = currentUser.following.includes(id)
-            const operation = isAlreadyFollowing? '$pull' : '$push'
-
-            // perform the update operation in parallel to reduce overall execution time
-            await Promise.all([
-                User.findByIdAndUpdate(
-                    {_id: req.user._id},
-                    {[operation]: { following: id }},
-                    {session}
-                ),
-
-                User.findByIdAndUpdate(
-                    {_id: id},
-                    {[operation]: { followers: req.user._id }},
-                    {session}
-                )
-            ])
-
-
-            // Commit the transaction when all operations are successful
-            await session.commitTransaction()
-
-            res.status(200).json({ message: `User ${isAlreadyFollowing? 'unfollowed' : 'followed'} successfully` })
-
-
-
-        } catch (err) {
-            // Rollback the transaction if any error occurs
-            await session.abortTransaction()
-            throw err
-        } finally {
-            // End the session
-            session.endSession()
+        // Validate that both users exist
+        if (!userToModify || !currentUser) {
+            return res.status(404).json({ message: "User not found" })
         }
-        
 
+        // Check if already following and determine operation type
+        const isAlreadyFollowing = currentUser.following.includes(id)
+        const operation = isAlreadyFollowing ? '$pull' : '$push'  // pull = remove/unfollow, push = add/follow
+
+        // Perform both updates in parallel:
+        // 1. Update current user's following list
+        // 2. Update target user's followers list
+        await Promise.all([
+            User.findByIdAndUpdate(
+                { _id: req.user._id },
+                { [operation]: { following: id } }
+            ),
+            User.findByIdAndUpdate(
+                { _id: id },
+                { [operation]: { followers: req.user._id } }
+            )
+        ])
+
+        // Send success response
+        res.status(200).json({ 
+            message: `User ${isAlreadyFollowing ? 'unfollowed' : 'followed'} successfully` 
+        })
 
     } catch (err) {
         res.status(500).json({ message: err.message })
         console.log("Error from followUnFollowUser controller: ", err.message)
     }
-
-    
 }
 
 
@@ -285,8 +249,7 @@ const followUnFollowUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
 
-    let { name, email, password, bio } = req.body
-    let { profilePic } = req.body
+    let { name, email, username, password, bio, profilePic } = req.body
 
 
     try {
@@ -299,7 +262,36 @@ const updateUser = async (req, res) => {
         // user cannot update another user's profile
         if (req.params.id !== req.user._id.toString())  return res.status(400).json({ message: "You cannot update another user's profile" })
 
-        // hash the password if it exists
+
+        // check if the email or username is already taken by another user
+        if (email || username) {
+            const userExists = await User.findOne(
+                {
+                    $and: [
+                        { _id: { $ne: req.user._id } },
+                        { 
+                            $or: [
+                                {email: email || ""},
+                                {username: username || ""}
+                            ]
+                         }
+                    ]
+                }
+            )
+
+
+            if (userExists) {
+                return res.status(400).json({ message: "Email or username already taken" })
+            }
+
+
+        }
+
+
+        
+
+
+        // hash the password if it is provided
         if (password) {
             const salt = await bcrypt.genSalt(10)
             const hashedPassword = await bcrypt.hash(password, salt)
@@ -307,21 +299,36 @@ const updateUser = async (req, res) => {
         }
 
 
-        
+        // @TODO: Uncomment
+        // // update the profilePic in cloudinary if it exists
+        // if (profilePic) {
+        //     // check if the user already has a profilePic
+        //     if (user.profilePic) {
+        //         // if the user already has a profilePic, then delete the previous profilePic from cloudinary
+        //         // get the publicId of the profilePic from the url
+        //         // for ex: https://res.cloudinary.com/dx3w3v7g2/image/upload/v1629780000/ProfilePics/person.jpg
+        //         // publicId: filename without extension - here, person
+        //         const publicId = user.profilePic.split("/").pop().split(".")[0]
+        //         await cloudinary.uploader.destroy(publicId)
+        //     }
+
+        //     // upload the new profilePic to cloudinary
+        //     const result = await cloudinary.uploader.upload(profilePic)
+        //     // set the profilePic to the url of the uploaded image
+        //     profilePic = result.secure_url
+        // }
 
 
         // update the user
         user.name = name || user.name
         user.email = email || user.email
-        user.bio = bio || user.bio
+        user.username = username || user.username
         user.profilePic = profilePic || user.profilePic
+        user.bio = bio || user.bio
 
 
         // save the user to the database
         user = await user.save()
-
-
-
         
 
         // send the updated user data in the response
