@@ -1,9 +1,8 @@
-const User = require("../models/userModel")
+const User = require("../models/userModel.js")
+const Post = require("../models/postModel.js")
 const bcrypt = require("bcryptjs")
-const generateTokenAndSetCookie = require("../utils/helpers/generateTokenAndSetCookie")
+const generateTokenAndSetCookie = require("../utils/helpers/generateTokenAndSetCookie.js")
 const mongoose = require("mongoose")
-// const cloudinary = require('cloudinary').v2
-
 
 
 
@@ -321,26 +320,6 @@ const updateUser = async (req, res) => {
         }
 
 
-        // @TODO: Uncomment
-        // // update the profilePic in cloudinary if it exists
-        // if (profilePic) {
-        //     // check if the user already has a profilePic
-        //     if (user.profilePic) {
-        //         // if the user already has a profilePic, then delete the previous profilePic from cloudinary
-        //         // get the publicId of the profilePic from the url
-        //         // for ex: https://res.cloudinary.com/dx3w3v7g2/image/upload/v1629780000/ProfilePics/person.jpg
-        //         // publicId: filename without extension - here, person
-        //         const publicId = user.profilePic.split("/").pop().split(".")[0]
-        //         await cloudinary.uploader.destroy(publicId)
-        //     }
-
-        //     // upload the new profilePic to cloudinary
-        //     const result = await cloudinary.uploader.upload(profilePic)
-        //     // set the profilePic to the url of the uploaded image
-        //     profilePic = result.secure_url
-        // }
-
-
         // update the user
         user.name = name || user.name
         user.email = email || user.email
@@ -355,7 +334,7 @@ const updateUser = async (req, res) => {
 
 
         // find all the posts that the user replied and then update the name, username , and profilePic of the user in the post
-        await User.updateMany(
+        await Post.updateMany(
             { "replies.userId": req.user._id },
 
             {
