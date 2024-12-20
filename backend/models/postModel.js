@@ -21,8 +21,7 @@ const postSchema = mongoose.Schema({
     },
 
     img: {
-        type: String,
-        default: ''
+        type: String
     },
 
     likes: {
@@ -31,6 +30,7 @@ const postSchema = mongoose.Schema({
         default: []
     },
 
+    // replies is an array of reply objects (details of the user who is replying)
     replies: [
         {
             userId: {

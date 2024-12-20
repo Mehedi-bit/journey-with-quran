@@ -30,7 +30,7 @@ const getUserProfile = async (req, res) => {
             user = await User.findOne({username: query}).select('-password').select('-__v').select('-updatedAt')
         }
 
-        if (!user) return res.status(404).json({ message: "User not found" })
+        if (!user) return res.status(404).json({ error: "User not found" })
 
         // send the user data in the response
         res.status(200).json(user)
@@ -38,7 +38,7 @@ const getUserProfile = async (req, res) => {
 
         
     } catch (err) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error from getUserProfile controller: ", err.message)
     }
 
@@ -55,18 +55,22 @@ const signupUser = async (req, res) => {
     try {
         const { name, email, username, password } = req.body
 
-        // Check if the user already exists (if the email or username is already in the database)
-        const userExists = await User.findOne(
-            {
-                $or: [
-                    {email: email},
-                    {username: username}
-                ]
-            }
-        )
+        // Check if email exists
+        const emailExists = await User.findOne({ email })
+        if (emailExists) {
+            return res.status(400).json({ 
+                error: "Email is already registered",
+                field: "email"
+            })
+        }
 
-        if (userExists) {
-            return res.status(400).json({ message: "User already exists" })
+        // Check if username exists
+        const usernameExists = await User.findOne({ username })
+        if (usernameExists) {
+            return res.status(400).json({ 
+                error: "Username is already taken",
+                field: "username"
+            })
         }
 
         // else create a new user
@@ -105,7 +109,7 @@ const signupUser = async (req, res) => {
             })
 
         } else {
-            res.status(400).json({ message: "Invalid user data" })
+            res.status(400).json({ error: "Invalid user data" })
         }
 
 
@@ -113,7 +117,7 @@ const signupUser = async (req, res) => {
 
 
     } catch (err) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error from signupUser controller: ", err.message)
     }
 }
@@ -135,14 +139,14 @@ const loginUser = async (req, res) => {
         })
         
         if (!user) {
-            return res.status(400).json({ message: "Invalid credentials" })
+            return res.status(400).json({ error: "Invalid credentials" })
         }
 
         // Then check if password is correct (after user exists, thus user.password will be never null while comparing using bcrypt)
         const passwordCorrect = await bcrypt.compare(password, user.password)
 
         if (!passwordCorrect) {
-            return res.status(400).json({ message: "Invalid credentials" })
+            return res.status(400).json({ error: "Invalid credentials" })
         }
 
         // If both checks pass, generate token and send response
@@ -160,7 +164,7 @@ const loginUser = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error from loginUser controller: ", err.message)
     }
 }
@@ -183,7 +187,7 @@ const logoutUser = async (req, res) => {
         res.status(200).json({ message: "User logged out successfully" })
 
     } catch (err) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error from logoutUser controller: ", err.message)
     }
 }
@@ -204,7 +208,7 @@ const followUnFollowUser = async (req, res) => {
 
         // Prevent self-following
         if (id === req.user._id.toString()) {
-            return res.status(400).json({ message: "You cannot follow or unfollow yourself" })
+            return res.status(400).json({ error: "You cannot follow or unfollow yourself" })
         }
 
         // start a transaction
@@ -217,22 +221,23 @@ const followUnFollowUser = async (req, res) => {
         // Validate that both users exist
         if (!userToModify || !currentUser) {
             await session.abortTransaction()
-            return res.status(404).json({ message: "User not found" })
+            return res.status(404).json({ error: "User not found" })
         }
 
         // Check if already following and determine operation type
         const isAlreadyFollowing = currentUser.following.includes(id)
         const operation = isAlreadyFollowing ? '$pull' : '$push'  // pull = remove/unfollow, push = add/follow
 
+        // Update the following list of the current user and the followers list of the target user
         // Perform updates within the transaction
         await User.findByIdAndUpdate(
-            { _id: req.user._id },
+            req.user._id,
             { [operation]: { following: id } },
             { session }
         );
 
         await User.findByIdAndUpdate(
-            { _id: id },
+            id,
             { [operation]: { followers: req.user._id } },
             { session }
         );
@@ -250,7 +255,7 @@ const followUnFollowUser = async (req, res) => {
     } catch (err) {
         // Rollback the transaction if any error occurs
         await session.abortTransaction()
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error from followUnFollowUser controller: ", err.message)
     } finally {
         session.endSession()
@@ -274,10 +279,10 @@ const updateUser = async (req, res) => {
         // check if the user exists
         let user = await User.findById(req.user._id)
 
-        if (!user) return res.status(400).json({ message: "User not found" })
+        if (!user) return res.status(400).json({ error: "User not found" })
         
         // user cannot update another user's profile
-        if (req.params.id !== req.user._id.toString())  return res.status(400).json({ message: "You cannot update another user's profile" })
+        if (req.params.id !== req.user._id.toString())  return res.status(400).json({ error: "You cannot update another user's profile" })
 
 
         // check if the email or username is already taken by another user
@@ -298,7 +303,7 @@ const updateUser = async (req, res) => {
 
 
             if (userExists) {
-                return res.status(400).json({ message: "Email or username already taken" })
+                return res.status(400).json({ error: "Email or username already taken" })
             }
 
 
@@ -354,7 +359,7 @@ const updateUser = async (req, res) => {
 
             
     } catch (err) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error from updateUser controller: ", err.message)
     }
 

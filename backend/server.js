@@ -3,6 +3,7 @@ const express = require('express');
 const connectDB = require('./db/connectDB.js')
 const cookieParser = require('cookie-parser')
 const userRoutes = require('./routes/userRoutes.js')
+const postRoutes = require('./routes/postRoutes.js')
 
 
 dotenv.config()
@@ -27,7 +28,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/users', userRoutes)
-// app.use('/api/posts', postRoutes)
+app.use('/api/posts', postRoutes)
 
 
 
