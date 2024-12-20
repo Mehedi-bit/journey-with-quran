@@ -2,6 +2,8 @@ const User = require("../models/userModel.js")
 const Post = require("../models/postModel.js")
 
 
+
+
 const createPost = async (req, res) => {
     try {
         
@@ -123,7 +125,7 @@ const likeUnlikePost = async (req, res) => {
 
         // check if the post exists
         const post = await Post.findById(postId)
-        
+
         if (!post) {
             return res.status(404).json({ error: "Post not found" })
         }
@@ -276,6 +278,30 @@ const getAllPosts = async (req, res) => {
 
 
 
+const getUserPosts = async (req, res) => {
+    try {
+
+        const username = req.params.username
+
+        // check if the user exists
+        const user = await User.findOne({ username })
+        if (!user) {
+            return res.status(404).json({ error: "User not found" })
+        }
+
+        // get the posts of the user
+        const posts = await Post.find({ postedBy: user._id }).sort({ createdAt: -1 })
+
+        // send a response
+        res.status(200).json(posts)
+        
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+        console.log("Error from getUserPosts controller: ", err.message)
+    }
+}
+
+
 
 
 
@@ -288,4 +314,5 @@ module.exports = {
     replyToPost,
     getFeedPosts,
     getAllPosts,
+    getUserPosts,
 }

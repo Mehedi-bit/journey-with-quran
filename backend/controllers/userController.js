@@ -351,12 +351,33 @@ const updateUser = async (req, res) => {
 
         // save the user to the database
         user = await user.save()
+
+
+
+        // find all the posts that the user replied and then update the name, username , and profilePic of the user in the post
+        await User.updateMany(
+            { "replies.userId": req.user._id },
+
+            {
+                $set: {
+                    "replies.$[reply].username": user.username,
+                    "replies.$[reply].name": user.name,
+                    "replies.$[reply].profilePic": user.profilePic
+                }
+            },
+
+            { arrayFilters: [{ "reply.userId": req.user._id }] }   // ensure that we only update the replies of the user who is logged in (current user)
+
+        )
+
+
+        // password should be null in response to secure
+        user.password = null
         
 
         // send the updated user data in the response
-        res.status(200).json({ message: "User updated successfully", user })
+        res.status(200).json(user)
        
-
             
     } catch (err) {
         res.status(500).json({ error: err.message })
@@ -372,6 +393,43 @@ const updateUser = async (req, res) => {
 
 
 
+// Get suggested users
+const getSuggestedUsers = async (req, res) => {
+    try {
+        const userId = req.user._id
+
+        // Get the list of users already followed by the current user
+        const currentUser = await User.findById(userId).select("following")
+        const followingIds = currentUser.following.map(id => id.toString()) // Converted to Array of strings of IDs for comparison
+
+        // Find 10 random users excluding the current user
+        const users = await User.aggregate([
+            { $match: { _id: { $ne: userId } } },
+            { $sample: { size: 10 } }
+        ])
+
+        // Filter out users already followed by the current user (and only keep 4)
+        const suggestedUsers = users.filter(user => !followingIds.includes(user._id.toString()))
+        .slice(0, 4) // Only keep 4 users
+
+
+        // secure sensitive info like passwords of the suggested users
+        suggestedUsers.forEach(user => {
+            user.password = null
+        })
+
+
+        // Send the suggested users as a response
+        res.status(200).json(suggestedUsers)
+
+    } catch (err) {
+        console.error("Error from getSuggestedUsers controller:", err.message)
+        res.status(500).json({ error: err.message })
+    }
+};
+
+
+
 
 
 
@@ -384,4 +442,5 @@ module.exports = {
     logoutUser,
     followUnFollowUser,
     updateUser,
+    getSuggestedUsers,
 }
