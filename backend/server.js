@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
+const cors = require("cors");
 const express = require('express');
 const connectDB = require('./db/connectDB.js')
 const cookieParser = require('cookie-parser')
@@ -10,6 +11,10 @@ dotenv.config()
 connectDB()
 
 const app = express();
+
+// Enable CORS for all requests
+// @TODO: Make this more specific and secure
+app.use(cors())
 
 const port = process.env.PORT || 5000;
 
