@@ -1,30 +1,44 @@
-import { div } from "framer-motion/client"
-import Sidebar from "./components/common/Sidebar"
 import { Route, Routes } from "react-router-dom"
-import Home from "./components/Home"
-import Profile from "./components/Profile"
+import Home from "./components/pages/Home"
+import { Navbar } from "./components/common/Navbar"
+import { ThemeProvider } from "@/components/theme-provider"
+import SpecificUserPage from "./components/pages/SpecificUserPage"
+import PostPage from "./components/pages/PostPage"
 
 
 
 function App() {
 
   return (
-    <div className="h-screen flex flex-row relative">
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 
-          {/* SIDEBAR */}
-          <Sidebar />
+    
+      <div className="h-screen flex flex-col relative">
 
-          {/* MAIN PAGE CONTENTS */}
-          <Routes>
+            {/* SIDEBAR */}
+            {/* <Sidebar /> */}
 
-              <Route path="/" element={<Home />} />
-              <Route path="/profile" element={<Profile />} />
-
-          </Routes>
+            {/* NAVBAR */}
+            <Navbar />
 
 
+            {/* MAIN PAGE CONTENTS */}
+            <Routes>
 
-    </div>
+                <Route path="/" element={<Home />} />
+                <Route path="/:username" element={<SpecificUserPage />} />
+                <Route path="/:username/post/:pid" element={<PostPage />} />
+
+                <Route path="*" element={<div className="text-center">Not Found</div>} />
+
+            </Routes>
+
+
+
+      </div>
+
+    
+    </ThemeProvider>
   )
 }
 
