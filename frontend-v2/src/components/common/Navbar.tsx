@@ -23,6 +23,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Link } from "react-router-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { authStateAtom } from "@/atoms/authAtom";
+import { userAtom } from "@/atoms/userAtom";
+import LogoutButton from "../auth/LogoutButton";
 
 interface MenuItem {
   title: string;
@@ -57,6 +61,8 @@ interface NavbarProps {
 }
 
 const Navbar = ({
+
+
   logo = {
     url: "#",
     src: "https://i.postimg.cc/Kz4R85sj/JWQ-LOGO.png",
@@ -142,6 +148,12 @@ const Navbar = ({
     signup: { text: "Sign up", url: "#" },
   },
 }: NavbarProps) => {
+
+  const setAuthState = useSetRecoilState(authStateAtom)
+  const userInfo = useRecoilValue(userAtom)
+
+
+
   return (
     <section className="py-4 px-10 mb-5">
       <div className="container">
@@ -160,12 +172,46 @@ const Navbar = ({
             </div>
           </div>
           <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.text}</a>
-            </Button>
-            <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.text}</a>
-            </Button>
+
+            {
+
+                !userInfo ?
+                (<Link to="/auth" >
+                  <Button variant="outline" size="sm"
+                    onClick={()=> setAuthState("login")}
+                  >
+                    {auth.login.text}
+                    
+                  </Button>
+                </Link>)
+
+                :
+                
+                <LogoutButton />
+
+
+            }
+
+            
+
+
+            {
+              
+              !userInfo &&
+              
+              <Link to="/auth" >
+                <Button  size="sm"
+                  onClick={()=> setAuthState("signup")}
+                >
+                  {auth.signup.text}
+                  
+                </Button>
+              </Link>
+            
+            }
+
+            
+
           </div>
         </nav>
         <div className="block lg:hidden">
@@ -213,12 +259,46 @@ const Navbar = ({
                     </div>
                   </div>
                   <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.text}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.text}</a>
-                    </Button>
+
+
+                    {
+                      !userInfo ?
+                      <Link to="/auth" >
+                      <Button variant="outline"
+                        onClick={()=> setAuthState("login")}
+                        className="w-full"
+                        >
+                        
+                        {auth.login.text}
+                        
+                      </Button>
+                      </Link>
+
+                      :
+
+                      <LogoutButton />
+
+                    }
+
+                    
+
+                    {
+                      
+                      !userInfo &&
+
+                      <Link to="/auth">
+                        <Button
+                          onClick={()=> setAuthState("signup")}
+                          className="w-full"
+                          >
+
+                              {auth.signup.text}
+
+                        </Button>
+                      </Link>
+                      
+                    }
+
                   </div>
                 </div>
               </SheetContent>

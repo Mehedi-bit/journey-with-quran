@@ -1,0 +1,76 @@
+
+import { LogOut } from 'lucide-react'
+import { Button } from '../ui/button'
+import { userAtom } from '@/atoms/userAtom'
+import { useSetRecoilState } from 'recoil'
+import { toast } from 'sonner'
+import { serverUrl } from '@/serverUrl'
+
+
+
+const LogoutButton = () => {
+
+    const setUserInfo = useSetRecoilState(userAtom)
+
+    // handle logout
+    const handleLogout = async () => {
+        
+        try {
+            // server actions
+            const res = await fetch(`${serverUrl}/api/users/logout`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+
+
+            const data = await res.json()
+            console.log(data)
+
+            if (data.error) {
+                console.log(data.error)
+                toast(data.error)
+                return              // prevent further
+            }
+
+
+            // otherwise logout success
+
+            // clear local storage
+            localStorage.removeItem("user-info")
+            // update userAtom
+            setUserInfo(null)
+
+            // show toast
+            toast("Log out success",{
+                description: "You have been logged out"
+            })
+
+
+        } catch (error) {
+            console.log(error)
+            toast("logout failed",{
+                description: `Error: ${error}`
+            })
+        }
+
+    }
+
+
+
+  return (
+    <Button variant="outline" size="sm"
+        onClick={handleLogout}
+    >
+    
+        {/* logout icon */}
+        <LogOut size={16} />   
+
+    </Button>
+  )
+}
+
+
+
+export default LogoutButton

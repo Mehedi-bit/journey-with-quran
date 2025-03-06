@@ -97,12 +97,18 @@ const PostCard: React.FC<PostCardProps> = ({likes, replies, postText, postImg}) 
                         </span>
                     </div>
 
-                    <div className="flex flex-row gap-1 items-center">
-                        <MessageCircle size={20} />
-                        <span className="text-sm text-gray-100">
-                            {replies}
-                        </span>
-                    </div>
+
+                    {/* <Link to="/mehedi/post/1"> */}
+                        <div className="flex flex-row gap-1 items-center">
+                            
+                                <MessageCircle size={20} />
+                                <span className="text-sm text-gray-100">
+                                    {replies}
+                                </span>
+                            
+                        </div>
+                    {/* </Link> */}
+
 
                     <div>
                         <Share2 size={20} />

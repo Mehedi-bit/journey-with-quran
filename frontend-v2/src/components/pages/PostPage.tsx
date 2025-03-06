@@ -10,6 +10,7 @@ import { Heart, Share2, MessageCircle } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useState } from "react";
 import { PostDropDownMenu } from "../post/PostDropdownMenu";
+import CommentsCard from "../post/CommentsCard";
 
 
 
@@ -84,14 +85,14 @@ const PostPage = () => {
                           className={`cursor-pointer ${liked? "text-red-500 fill-red-500" : "text-white" }`}
                       />
                       <span className="text-sm text-gray-100">
-                          98
+                          {likeCount}
                       </span>
                   </div>
 
                   <div className="flex flex-row gap-1 items-center">
                       <MessageCircle size={20} />
                       <span className="text-sm text-gray-100">
-                          12
+                          5
                       </span>
                   </div>
 
@@ -105,6 +106,8 @@ const PostPage = () => {
               
 
               {/* COMMENTS HERE */}
+
+              <CommentsCard />
 
               
 
