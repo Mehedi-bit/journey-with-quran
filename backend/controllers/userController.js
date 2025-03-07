@@ -105,6 +105,7 @@ const signupUser = async (req, res) => {
                 followers: newUser.followers,
                 following: newUser.following,
                 bio: newUser.bio,
+                profilePic: newUser.profilePic,
             })
 
         } else {

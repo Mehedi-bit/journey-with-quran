@@ -65,6 +65,10 @@ export function LoginCard({
               onClick: () => console.log("Try again"),
             },
           })
+          
+
+          // reset loading
+          setLoading(false)
 
           return              // prevent further
         }
@@ -90,6 +94,9 @@ export function LoginCard({
         })
         
       }
+
+      
+
   }
 
 

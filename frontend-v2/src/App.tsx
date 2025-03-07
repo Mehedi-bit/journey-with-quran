@@ -7,6 +7,7 @@ import PostPage from "./components/pages/PostPage"
 import AuthPage from "./components/pages/AuthPage"
 import { useRecoilValue } from "recoil"
 import { userAtom } from "./atoms/userAtom"
+import UpdateProfilePage from "./components/pages/UpdateProfilePage"
 
 
 
@@ -39,7 +40,10 @@ function App() {
                 <Route path="/:username" element={<SpecificUserPage />} />
                 <Route path="/:username/post/:pid" element={<PostPage />} />
 
+                {/* @TODO: Edit later */}
+                <Route path="/update" element={userInfo? <UpdateProfilePage /> : <Navigate to={"/auth"} />} />
                 <Route path="*" element={<div className="text-center">Not Found</div>} />
+
 
             </Routes>
 

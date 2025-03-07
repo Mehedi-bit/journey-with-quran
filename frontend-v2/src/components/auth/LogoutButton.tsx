@@ -1,21 +1,27 @@
 
-import { LogOut } from 'lucide-react'
+import { Loader2Icon, LogOut } from 'lucide-react'
 import { Button } from '../ui/button'
 import { userAtom } from '@/atoms/userAtom'
 import { useSetRecoilState } from 'recoil'
 import { toast } from 'sonner'
 import { serverUrl } from '@/serverUrl'
+import { useState } from 'react'
 
 
 
 const LogoutButton = () => {
 
     const setUserInfo = useSetRecoilState(userAtom)
+    const [loading, setLoading] = useState(false)
 
     // handle logout
     const handleLogout = async () => {
         
         try {
+
+            // set loading
+            setLoading(true)
+
             // server actions
             const res = await fetch(`${serverUrl}/api/users/logout`, {
                 method: "POST",
@@ -31,6 +37,11 @@ const LogoutButton = () => {
             if (data.error) {
                 console.log(data.error)
                 toast(data.error)
+
+
+                // reset loading
+                setLoading(false)
+
                 return              // prevent further
             }
 
@@ -65,7 +76,13 @@ const LogoutButton = () => {
     >
     
         {/* logout icon */}
-        <LogOut size={16} />   
+
+        {
+            loading ? <Loader2Icon size={16} className="animate-spin" /> 
+            : <LogOut size={16} />
+        }
+
+          
 
     </Button>
   )

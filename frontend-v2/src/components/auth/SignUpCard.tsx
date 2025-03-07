@@ -73,6 +73,9 @@ export function SignUpCard({
           },
         })
 
+        // reset loading
+        setLoading(false)
+
         return   // not to proceed further if error
       }
 
