@@ -6,6 +6,7 @@ import {
     toast
   } from "sonner"
   import {
+    set,
     useForm
   } from "react-hook-form"
   import {
@@ -27,6 +28,7 @@ import {
   } from "@/components/ui/form"
   import {
     CloudUpload,
+    LoaderCircle,
     Paperclip
   } from "lucide-react"
   import {
@@ -53,7 +55,7 @@ import {
 import usePreviewImage from "@/hooks/usePreviewImage"
 import { useRecoilState } from "recoil"
 import { userAtom } from "@/atoms/userAtom"
-import { profile } from "console"
+import { serverUrl } from "@/serverUrl"
   
   const formSchema = z.object({
     name_9709521402: z.string().optional(),
@@ -68,17 +70,22 @@ import { profile } from "console"
   
     const [files, setFiles] = useState < File[] | null > (null);
     const [file, setFile] = useState(null);
-    const preview = usePreviewImage(file);
     const [userInfo, setUserInfo] = useRecoilState(userAtom)
 
+    const {previewImgUrl, handleImageChange, setPreviewImgUrl} = usePreviewImage()
+
+
     const [inputs, setInputs] = useState({
-      name: JSON.parse(userInfo)?.name,
-      username: JSON.parse(userInfo)?.username,
-      email: JSON.parse(userInfo)?.email,
-      password: JSON.parse(userInfo)?.password,
-      bio: JSON.parse(userInfo)?.bio,
-      profilePic: JSON.parse(userInfo)?.profilePic,
+      name: userInfo?.name,
+      username: userInfo?.username,
+      email: userInfo?.email,
+      password: "",
+      bio: userInfo?.bio,
+      profilePic: userInfo?.profilePic,
     })
+
+
+    const [loading, setLoading] = useState(false)
 
 
     console.log(inputs)
@@ -89,7 +96,8 @@ import { profile } from "console"
     
     const dropZoneConfig = {
       maxFiles: 5,
-      maxSize: 1024 * 1024 * 4,
+      // set max file size to 20MB
+      // maxFileSize: 20 * 1024 * 1024,
       multiple: true,
     };
     const form = useForm < z.infer < typeof formSchema >> ({
@@ -97,29 +105,69 @@ import { profile } from "console"
   
     })
   
-    function onSubmit(values: z.infer < typeof formSchema > ) {
+    const handleSubmit = async (e) => {
+      e.preventDefault()
+      setLoading(true)
+
+
       try {
-        console.log(values);
-        toast(
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-          </pre>
-        );
+        console.log("this is after form submitting update form", inputs)
+        console.log("this is userinfo", userInfo)
+
+        // server actions
+        const res = await fetch(`/api/users/update/${userInfo._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",  // ✅ This will allow sending cookies (as secured route)
+          body: JSON.stringify({...inputs, profilePic: previewImgUrl})
+        })
+
+        
+        const data = await res.json()
+        console.log("This is updated fetched data ", data)
+
+        if (data.error) {
+          console.log(data.error)
+          toast(data.error)
+          return
+        }
+
+        // otherwise update success
+        setUserInfo(data)
+
+        // show toast
+        toast("Profile Updated successfully")
+
+        // update local storage
+        localStorage.setItem("user-info", JSON.stringify(data))
+
+        // set loading to false
+        setLoading(false)
+
+
+
+
       } catch (error) {
-        console.error("Form submission error", error);
-        toast.error("Failed to submit the form. Please try again.");
+        toast(`${error}`)
       }
+
     }
   
     return (
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10 px-5">
+      <Form {...form} >
+        <form onSubmit={handleSubmit} className="space-y-8 max-w-3xl mx-auto py-10 px-5">
 
               <div className="flex items-center justify-center">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={preview} defaultValue={JSON.parse(userInfo)?.profilePic} alt="@user" className="object-cover"/>
+                {/* <Avatar className="h-20 w-20">
+                  <AvatarImage src={previewImgUrl} defaultValue={userInfo.profilePic} alt="@user" className="object-cover"/>
                   <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                </Avatar> */}
+
+                <div className="h-20 w-20">
+                  <img src={previewImgUrl || userInfo.profilePic} alt="" className="h-20 w-20 rounded-full object-cover"  />
+                </div>
               </div>
           
               <FormField
@@ -136,7 +184,7 @@ import { profile } from "console"
                         className="relative bg-background rounded-lg p-2"
                         type="file"
                         accept="image/*"
-                        onChange={(e) => setFile(e.target.files[0])}
+                        onChange={handleImageChange}
                       >
                         <FileInput
                           id="fileInput"
@@ -184,9 +232,11 @@ import { profile } from "console"
                 <FormControl>
                   <Input 
                   placeholder="Full name"
-                  defaultValue={JSON.parse(userInfo)?.name}
+                  defaultValue={userInfo?.name}
                   type=""
-                  {...field} />
+                  {...field}
+                  onChange={(e) => setInputs({...inputs, name: e.target.value})}
+                  />
                 </FormControl>
                 <FormDescription>keep it blank if you don't want to update it</FormDescription>
                 <FormMessage />
@@ -206,9 +256,11 @@ import { profile } from "console"
                 <FormControl>
                   <Input 
                   placeholder="username"
-                  defaultValue={JSON.parse(userInfo)?.username}
+                  defaultValue={userInfo?.username}
                   type=""
-                  {...field} />
+                  {...field} 
+                  onChange={(e) => setInputs({...inputs, username: e.target.value})}
+                  />
                 </FormControl>
                 <FormDescription>keep it blank if you don't want to update it</FormDescription>
                 <FormMessage />
@@ -228,9 +280,11 @@ import { profile } from "console"
                 <FormControl>
                   <Input 
                   placeholder="keep it blank if you don't want to update it"
-                  defaultValue={JSON.parse(userInfo)?.email}
+                  defaultValue={userInfo?.email}
                   type="email"
-                  {...field} />
+                  {...field} 
+                  onChange={(e) => setInputs({...inputs, email: e.target.value})}
+                  />
                 </FormControl>
                 
                 <FormMessage />
@@ -245,7 +299,9 @@ import { profile } from "console"
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <PasswordInput placeholder="Your password" {...field} />
+                  <PasswordInput placeholder="Your password" {...field} 
+                      onChange={(e) => setInputs({...inputs, password: e.target.value})}
+                  />
                 </FormControl>
                 <FormDescription>keep it blank if you don't want to update it</FormDescription>
                 <FormMessage />
@@ -264,8 +320,9 @@ import { profile } from "console"
                   <Textarea
                     placeholder="Your bio"
                     className="resize-none"
-                    defaultValue={JSON.parse(userInfo)?.bio}
+                    defaultValue={userInfo?.bio}
                     {...field}
+                    onChange={(e) => setInputs({...inputs, bio: e.target.value})}
                   />
                 </FormControl>
                 <FormDescription>keep it blank if you don't want to update it</FormDescription>
@@ -273,7 +330,9 @@ import { profile } from "console"
               </FormItem>
             )}
           />
-          <Button type="submit">Update</Button>
+          <Button type="submit" className="min-w-20">
+            {loading ? <LoaderCircle className="animate-spin" /> : "Update"}
+          </Button>
         </form>
       </Form>
     )

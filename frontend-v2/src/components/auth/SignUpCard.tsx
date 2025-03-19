@@ -51,7 +51,7 @@ export function SignUpCard({
 
 
       // server actions
-      const res = await fetch(`${serverUrl}/api/users/signup`, {
+      const res = await fetch(`/api/users/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

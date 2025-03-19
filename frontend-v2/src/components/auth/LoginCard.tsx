@@ -40,7 +40,7 @@ export function LoginCard({
         setLoading(true)
         
         // server actions
-        const res = await fetch(`${serverUrl}/api/users/login`, {
+        const res = await fetch(`/api/users/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export function LoginCard({
               onClick: () => console.log("Try again"),
             },
           })
-          
+
 
           // reset loading
           setLoading(false)

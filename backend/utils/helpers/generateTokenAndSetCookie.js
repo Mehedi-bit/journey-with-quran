@@ -10,12 +10,23 @@ const generateTokenAndSetCookie = (userId, res) => {
         expiresIn: '30d'
     })
 
+    console.log("token generated in generateTokenAndSetCookie: ", token)
+
     // set the token in a cookie
     res.cookie('jwt', token, {
-        httpOnly: true, // cookie cannot be accessed or modified by the browser
+        // cookie cannot be accessed or modified by the browser
+        httpOnly: true, 
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        sameSite: 'strict' // the cookie will only be sent in requests to the same site
+        // set samesite none
+        sameSite: 'lax',
     })
+
+    console.log("token generated and set in cookie")
+    
+    // @TODO: Test purpose only. Remove this line 
+    // res.json({
+    //     token: token
+    // })
 
     return token
 }

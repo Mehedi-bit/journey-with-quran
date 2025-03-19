@@ -3,7 +3,7 @@ const Post = require("../models/postModel.js")
 const bcrypt = require("bcryptjs")
 const generateTokenAndSetCookie = require("../utils/helpers/generateTokenAndSetCookie.js")
 const mongoose = require("mongoose")
-
+const cloudinary = require('cloudinary').v2
 
 
 
@@ -150,7 +150,9 @@ const loginUser = async (req, res) => {
         }
 
         // If both checks pass, generate token and send response
-        generateTokenAndSetCookie(user._id, res)
+        const token = generateTokenAndSetCookie(user._id, res)
+
+        console.log("Here is the token: ", token)
 
         res.status(200).json({
             _id: user._id,
@@ -271,7 +273,10 @@ const followUnFollowUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
 
+
     let { name, email, username, password, bio, profilePic } = req.body
+
+    console.log("cookie found in updateUser: ", req.cookies.jwt)
 
 
     try {
@@ -318,6 +323,24 @@ const updateUser = async (req, res) => {
             const salt = await bcrypt.genSalt(10)
             const hashedPassword = await bcrypt.hash(password, salt)
             user.password = hashedPassword
+        }
+
+
+
+
+        // if the profilePic is provided from the frontend, then upload the image to cloudinary and update the profilePic before saving in the database
+        if (profilePic) {
+
+            // if the user already has a profilePic, then delete the previous profilePic from cloudinary
+            if (user.profilePic) {
+                await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split(".")[0]);
+            }
+
+
+            // upload the profilePic to cloudinary
+            const uploadedResponse = await cloudinary.uploader.upload(profilePic)
+
+            profilePic = uploadedResponse.secure_url
         }
 
 

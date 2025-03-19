@@ -23,7 +23,7 @@ const LogoutButton = () => {
             setLoading(true)
 
             // server actions
-            const res = await fetch(`${serverUrl}/api/users/logout`, {
+            const res = await fetch(`/api/users/logout`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
