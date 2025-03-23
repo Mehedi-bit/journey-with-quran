@@ -1,23 +1,105 @@
+import { useParams, useNavigate } from "react-router-dom"
 import PostCard from "../post/PostCard"
 import UserHeader from "../user/UserHeader"
-
-
+import { useEffect, useState } from "react"
+import { LoaderIcon } from "lucide-react"
+import { toast } from "sonner"
+import { Button } from "../ui/button"
 
 const SpecificUserPage = () => {
-  return (
-    <div className="px-[5%] md:px-[20%]">
+    const [userData, setUserData] = useState(null)
+    const [posts, setPosts] = useState([]) // Store user posts
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const { username } = useParams<{ username: string }>()
+    const navigate = useNavigate()
 
-      <div className="px-[5%] md:px-0">
-        <UserHeader name="Mehedi Hasan" username="mehedi_hasan" bio="Servent of Allah. A practicing Muslim." profilePic="https://api.dicebear.com/9.x/rings/svg?seed=Destiny" />
-      </div>
+    useEffect(() => {
+        const getUserData = async () => {
+            setLoading(true)
+            setError(null)
+            try {
+                // Fetch user data
+                const userRes = await fetch(`/api/users/profile/${username}`)
+                const userData = await userRes.json()
 
-      <PostCard likes={45} replies={12} postText="This is my fourth post" postImg="https://cdn.pixabay.com/photo/2015/12/10/14/17/desert-1086415_1280.jpg" />
-      <PostCard likes={24} replies={10} postText="This is my third post" postImg="https://cdn.pixabay.com/photo/2022/04/29/08/50/desert-7162926_1280.jpg" />
-      <PostCard likes={43} replies={30} postText="This is my second post" postImg="https://cdn.pixabay.com/photo/2012/11/22/08/18/mecca-66966_1280.jpg" />
-      <PostCard likes={75} replies={5} postText="This is my first post" />
-      
-    </div>
-  )
+                if (!userRes.ok || userData.error) {
+                    setError(userData.error || "User not found")
+                    toast(userData.error || "User not found")
+                    return
+                }
+
+                setUserData(userData)
+
+                // Fetch user's posts
+                const postsRes = await fetch(`/api/posts/user/${username}`)
+                const postsData = await postsRes.json()
+
+                if (!postsRes.ok || postsData.error) {
+                    setError(postsData.error || "No posts found")
+                    toast(postsData.error || "No posts found")
+                    return
+                }
+
+                setPosts(postsData) // Store posts in state
+            } catch (error) {
+                toast(`${error}`, {
+                  description: "Failed to fetch data"
+                })
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        getUserData()
+    }, [username])
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-[80vh]">
+                <LoaderIcon className="text-center animate-spin" />
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="text-center mt-10">
+                <Button variant="link" onClick={() => navigate("/")} className="mt-5">
+                    Go back to home
+                </Button>
+            </div>
+        )
+    }
+
+    return (
+        <div className="px-[5%] md:px-[20%]">
+            <div className="px-[5%] md:px-0">
+                <UserHeader userData={userData} />
+            </div>
+
+            {/* Render posts dynamically */}
+            {posts.length > 0 ? (
+                posts.map((post) => (
+                    <PostCard
+                        key={post._id}
+                        postId={post._id} // Post ID
+                        likes={post.likes.length} // Likes array length
+                        replies={post.replies.length} // Replies array length
+                        postText={post.text} // Combine text and extra if exists
+                        postExtra={post.extra || null} // If extra exists, show it
+                        postImg={post.image || null} // If image exists, show it
+
+                        name={post.postedBy.name} 
+                        username={post.postedBy.username} 
+                        profilePic={post.postedBy.profilePic} 
+                    />
+                ))
+            ) : (
+                <p className="text-center mt-5 text-gray-500">No posts found</p>
+            )}
+        </div>
+    )
 }
 
 export default SpecificUserPage

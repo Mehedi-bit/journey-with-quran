@@ -126,35 +126,84 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BookMarked, Image as ImageIcon, Link, Send } from "lucide-react";
-
+import { BookMarked, Image as ImageIcon, Link, Loader2, Send } from "lucide-react";
+import { set } from "react-hook-form";
+import { toast } from "sonner";
 interface PostCreatorProps {
-  onSubmit?: (content: string) => void;
-  userAvatar?: string;
-  username?: string;
+  currentUserInfo: any;
 }
 
 const PostCreateSurface = ({
-  onSubmit = () => {},
-  userAvatar = "https://api.dicebear.com/9.x/micah/svg?seed=Luis",
-  username = "User",
+  currentUserInfo
 }: PostCreatorProps) => {
   const [content, setContent] = useState("");
+  const [extraContentForPhoto, setExtraContentForPhoto] = useState("");
   const [activeTab, setActiveTab] = useState("write");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    if (content.trim()) {
-      onSubmit(content);
-      setContent("");
+
+
+  const handleCreatePost = async () => {
+    
+    setLoading(true);
+
+    if (!content) {
+      toast("Write your journey through any ayah or any sign");
+      setLoading(false);
+      return
     }
+
+    try {
+
+      // server actions
+      const res = await fetch('/api/posts/create', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          postedBy: currentUserInfo._id,
+          text: content,
+          extra: extraContentForPhoto,
+          img: ""
+        })
+      })
+
+
+      const data = await res.json();
+
+      if (data.error) {
+        toast(data.error)
+        return;
+      }
+
+      // otherwise ok, post created successfully
+      toast("Your post is live now")
+
+      // reset the form
+      setContent("");
+      setExtraContentForPhoto("");
+
+      
+
+
+
+    } catch (error) {
+       console.log(error)
+       toast(`${error}`)
+    } finally {
+      setLoading(false);
+    }
+
+
   };
 
   return (
     <Card className="w-full p-4 bg-card mb-3">
       <div className="flex items-start gap-4">
         <Avatar className="h-10 w-10">
-          <AvatarImage src={userAvatar} alt={username} />
-          <AvatarFallback>{username[0]}</AvatarFallback>
+          <AvatarImage className="object-cover" src={currentUserInfo.profilePic} alt={currentUserInfo.username} />
+          <AvatarFallback>You</AvatarFallback>
         </Avatar>
 
         <div className="flex-1">
@@ -165,7 +214,9 @@ const PostCreateSurface = ({
           >
             <TabsList className="grid w-full grid-cols-2 mb-4">
               <TabsTrigger value="write">Write</TabsTrigger>
-              <TabsTrigger value="preview">Preview</TabsTrigger>
+              {/* it was for showing post preview */}
+              {/* <TabsTrigger value="preview">Preview</TabsTrigger>    */}
+              <TabsTrigger value="verse">Verse</TabsTrigger>
             </TabsList>
 
             <TabsContent value="write">
@@ -177,11 +228,23 @@ const PostCreateSurface = ({
               />
             </TabsContent>
 
-            <TabsContent value="preview">
+            {/* it was for showing post preview */}
+            {/* <TabsContent value="preview">
               <div className="min-h-[120px] mb-4 p-3 border rounded-md bg-background text-card-foreground">
                 {content || "Preview will appear here"}
               </div>
+            </TabsContent> */}
+
+
+            <TabsContent value="verse">
+            <Textarea
+                placeholder="Mention a short verse or part of a verse..."
+                value={extraContentForPhoto}
+                onChange={(e) => setExtraContentForPhoto(e.target.value)}
+                className="min-h-[120px] mb-4 bg-background"
+              />
             </TabsContent>
+
           </Tabs>
 
           <div className="flex items-center justify-between">
@@ -198,11 +261,13 @@ const PostCreateSurface = ({
             </div>
 
             <Button
-              onClick={handleSubmit}
+              onClick={handleCreatePost}
               className="bg-primary hover:bg-primary/90"
             >
               <Send />
-              Share
+              {
+                loading ? <Loader2 className="animate-spin mx-auto" size={16} /> : "Share"
+              }
             </Button>
           </div>
         </div>

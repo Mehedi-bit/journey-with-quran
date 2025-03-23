@@ -1,4 +1,4 @@
-import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
+import { Book, Menu, Sunset, Trees, Zap, UserRound } from "lucide-react";
 
 import {
   Accordion,
@@ -22,6 +22,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+
+
 import { Link } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { authStateAtom } from "@/atoms/authAtom";
@@ -64,7 +72,7 @@ const Navbar = ({
 
 
   logo = {
-    url: "#",
+    url: "/",
     src: "https://i.postimg.cc/Kz4R85sj/JWQ-LOGO.png",
     alt: "logo",
     title: "Journey with Quran",
@@ -73,7 +81,7 @@ const Navbar = ({
 
 
   menu = [
-    { title: "Home", url: "#" },
+    { title: "Home", url: "/" },
     {
       title: "Quran",
       url: "#",
@@ -171,7 +179,12 @@ const Navbar = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-10 items-center">
+
+            <Link to={`/${userInfo.username}`}>
+              <UserRound size={20} />
+            </Link>
+
 
             {
 
@@ -245,7 +258,7 @@ const Navbar = ({
                   >
                     {menu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
-                  <div className="border-t py-4">
+                  {/* <div className="border-t py-4">
                     <div className="grid grid-cols-2 justify-start">
                       {mobileExtraLinks.map((link, idx) => (
                         <a
@@ -257,9 +270,20 @@ const Navbar = ({
                         </a>
                       ))}
                     </div>
-                  </div>
-                  <div className="flex flex-col gap-3">
+                  </div> */}
 
+
+                  
+
+                  <div className="flex flex-col gap-5">
+
+
+                      <Button variant="outline">
+                        <Link to={`/${userInfo.username}`}>
+                          <UserRound size={20} />
+                        </Link>
+                      </Button>
+                    
 
                     {
                       !userInfo ?
@@ -298,6 +322,7 @@ const Navbar = ({
                       </Link>
                       
                     }
+
 
                   </div>
                 </div>

@@ -59,22 +59,23 @@ const usePreviewImage = () => {
         }
 
         try {
-            const compressedFile = await compressImage(file);
+            // const compressedFile = await compressImage(file);
             
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImgUrl(reader.result);
             };
-            reader.readAsDataURL(compressedFile);
+            // reader.readAsDataURL(compressedFile);
+            reader.readAsDataURL(file);
 
-            console.log(
-                `Original: ${(file.size / 1024).toFixed(2)}KB | ` +
-                `Compressed: ${(compressedFile.size / 1024).toFixed(2)}KB | ` +
-                `Dimensions: 100x100px`
-            );
+            // console.log(
+            //     `Original: ${(file.size / 1024).toFixed(2)}KB | ` +
+            //     `Compressed: ${(compressedFile.size / 1024).toFixed(2)}KB | ` +
+            //     `Dimensions: 100x100px`
+            // );
 
         } catch (error) {
-            toast.error(error.message || "Failed to compress image");
+            toast(`${error}` || "Failed to compress image");
             setPreviewImgUrl(null);
         }
     };

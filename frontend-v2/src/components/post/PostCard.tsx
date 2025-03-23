@@ -11,27 +11,82 @@ import { Heart, Share2, MessageCircle } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
+import ayahBgPic from "../../assets/ayah_bg.png";
+import ayahBgPic3 from "../../assets/ayah_bg3.jpg";
+import ayahBgPic4 from "../../assets/ayah_bg4.jpg";
+
+
+// shuffle and get a random image from these images
+const bgPics = [ayahBgPic, ayahBgPic3, ayahBgPic4];
+const randomBgPic = bgPics[Math.floor(Math.random() * bgPics.length)];
 
 
 // types interface
 interface PostCardProps {
+    postId: string;
     likes: number;
     replies: number;
     postText: string;
+    postExtra?: string;
     postImg?: string;
+
+    name: string;
+    username: string;
+    profilePic: string;
+    ayah: string;
 }
 
 
-const PostCard: React.FC<PostCardProps> = ({likes, replies, postText, postImg}) => {
+const PostCard: React.FC<PostCardProps> = ({postId, likes, replies, postText, postImg, name, username, profilePic, ayah}) => {
 
 
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(likes);
+    const [loading, setLoading] = useState(false);
 
-    const handleLike = () => {
-        setLiked(!liked)
-        setLikeCount( liked? likeCount-1 : likeCount+1)
+    const handleLike = async () => {
+
+        if (loading) return; // if already loading, return
+
+        setLoading(true)
+
+        // implement like functionality
+
+        try {
+
+            // server actions
+            const res = await fetch(`/api/posts/like/${postId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+
+            const data = await res.json();
+
+            if (!res.ok || data.error) {
+                toast(data.error)
+                return;
+            }
+
+            // update the like count
+            setLiked(!liked)
+            setLikeCount(liked? likeCount - 1 : likeCount + 1)
+
+            toast(data.message)
+
+
+        } catch (error) {
+            toast(`${error}`)
+        } finally {
+            setLoading(false)
+        }
+
+
+
+
     }
 
 
@@ -46,10 +101,10 @@ const PostCard: React.FC<PostCardProps> = ({likes, replies, postText, postImg}) 
                     <div className="flex flex-row gap-2">
                         <img 
                             className="h-10 w-10 rounded-full object-cover border border-gray-700 p-0.5" 
-                            src="https://api.dicebear.com/9.x/rings/svg?seed=Destiny" alt="" />
+                            src={profilePic} alt="" />
                         <div>
-                            <CardTitle>Mehedi Hasan</CardTitle>
-                            <CardDescription>@mehedi_hasan</CardDescription>
+                            <CardTitle>{name}</CardTitle>
+                            <CardDescription>@{username}</CardDescription>
                         </div>
                     </div>
 
@@ -71,9 +126,23 @@ const PostCard: React.FC<PostCardProps> = ({likes, replies, postText, postImg}) 
 
                 <CardContent>
                     {
-                        postImg && (
-                            <img className="rounded-lg object-cover" src={postImg} alt="" />
+                        // postImg && (
+                        //     <img className="rounded-lg object-cover" src={postImg} alt="" />
+                        // )
+
+                        ayah !== "" && (
+                            <div className="relative w-full">
+                                <img 
+                                    className="rounded-lg object-cover w-full h-auto" 
+                                    src={ayahBgPic}   // randomBgPic also can be used
+                                    alt="" 
+                                />
+                                <h1 className="absolute inset-0 flex items-center justify-center text-amber-950 text-sm md:text-2xl font-bold  rounded-lg px-4 md:px-8 text-center max-w-[90%] mx-auto" style={{ fontFamily: "'Amiri', serif" }}>
+                                    {ayah}
+                                </h1>
+                            </div>
                         )
+
                     }
                 </CardContent>
 

@@ -107,6 +107,9 @@ import { serverUrl } from "@/serverUrl"
   
     const handleSubmit = async (e) => {
       e.preventDefault()
+
+      if (loading) return;   // if already loading then return to get out of the function to get rid of multiple request at a time if user tries to click multiple times
+     
       setLoading(true)
 
 
@@ -151,6 +154,8 @@ import { serverUrl } from "@/serverUrl"
 
       } catch (error) {
         toast(`${error}`)
+      } finally {
+        setLoading(false)
       }
 
     }

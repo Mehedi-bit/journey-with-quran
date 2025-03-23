@@ -42,7 +42,7 @@ const createPost = async (req, res) => {
 
 
         // send a response
-        res.status(201).json({ message: "Post created successfully", newPost })
+        res.status(201).json(newPost)
 
 
 
@@ -244,9 +244,11 @@ const getFeedPosts = async (req, res) => {
         const following = user.following
 
         const feedPosts = await Post.find({ postedBy: { $in: following } }).sort({ createdAt: -1 })
+                                    .populate("postedBy", "_id name username profilePic")
+                                    .populate("replies.userId", "_id name username profilePic")
 
         // send a response
-        res.status(200).json({ feedPosts })
+        res.status(200).json(feedPosts)
 
 
 
@@ -264,9 +266,11 @@ const getAllPosts = async (req, res) => {
     try {
 
         const allPosts = await Post.find().sort({ createdAt: -1 })
+                                    .populate("postedBy", "_id name username profilePic")
+                                    .populate("replies.userId", "_id name username profilePic")
 
         // send a response
-        res.status(200).json({ allPosts })
+        res.status(200).json(allPosts)
 
     } catch (err) {
         res.status(500).json({ error: err.message })
@@ -291,6 +295,9 @@ const getUserPosts = async (req, res) => {
 
         // get the posts of the user
         const posts = await Post.find({ postedBy: user._id }).sort({ createdAt: -1 })
+                                .populate("postedBy", "_id name username profilePic")
+                                .populate("replies.userId", "_id name username profilePic")
+
 
         // send a response
         res.status(200).json(posts)

@@ -12,6 +12,15 @@ import { useState } from "react";
 import { PostDropDownMenu } from "../post/PostDropdownMenu";
 import CommentsCard from "../post/CommentsCard";
 
+import ayahBgPic from "../../assets/ayah_bg.png";
+import ayahBgPic3 from "../../assets/ayah_bg3.jpg";
+import ayahBgPic4 from "../../assets/ayah_bg4.jpg";
+
+
+// shuffle and get a random image from these images
+const bgPics = [ayahBgPic, ayahBgPic3, ayahBgPic4];
+const randomBgPic = bgPics[Math.floor(Math.random() * bgPics.length)];
+
 
 
 
@@ -64,8 +73,20 @@ const PostPage = () => {
 
               <CardContent>
                       
-                   <img className="rounded-lg object-cover" src="https://cdn.pixabay.com/photo/2015/12/10/14/17/desert-1086415_1280.jpg" alt="" />
-                      
+
+                <div className="relative w-full">
+                    <img 
+                        className="rounded-lg object-cover w-full h-auto" 
+                        src={ayahBgPic}   // randomBgPic also can be used
+                        alt="" 
+                    />
+                    <h1 className="absolute inset-0 flex items-center justify-center text-amber-950 text-sm md:text-2xl font-bold  rounded-lg px-4 md:px-8 text-center max-w-[90%] mx-auto" style={{ fontFamily: "'Amiri', serif" }}>
+                        ٱلْحَمْدُ لِلَّهِ ٱلَّذِىٓ أَنزَلَ عَلَىٰ عَبْدِهِ ٱلْكِتَـٰبَ وَلَمْ يَجْعَل لَّهُۥ عِوَجَاۜ
+                        ٱلْحَمْدُ لِلَّهِ ٱلَّذِىٓ أَنزَلَ عَلَىٰ عَبْدِهِ ٱلْكِتَـٰبَ وَلَمْ يَجْعَل لَّهُۥ عِوَجَاۜ
+                        ٱلْحَمْدُ لِلَّهِ ٱلَّذِىٓ أَنزَلَ عَلَىٰ عَبْدِهِ ٱلْكِتَـٰبَ وَلَمْ يَجْعَل لَّهُۥ عِوَجَاۜ
+                    </h1>
+                </div>
+
 
               </CardContent>
 

@@ -16,7 +16,7 @@ const app = express();
 
 
 // Middlewares
-app.use(express.json());  // Parse JSON bodies (req.body)
+app.use(express.json( {limit:"50mb"} ));  // Parse JSON bodies (req.body)
 app.use(express.urlencoded({ extended: true }));  // Parse URL encoded bodies (form data in req.body)
 app.use(cookieParser())  // For reach and access the cookies
 
