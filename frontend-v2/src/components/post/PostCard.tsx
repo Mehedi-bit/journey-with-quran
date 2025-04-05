@@ -6,58 +6,82 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
-import { PostDropDownMenu } from "./PostDropdownMenu";
 import { Heart, Share2, MessageCircle } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
 
 import ayahBgPic from "../../assets/ayah_bg.png";
-import ayahBgPic3 from "../../assets/ayah_bg3.jpg";
-import ayahBgPic4 from "../../assets/ayah_bg4.jpg";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { userAtom } from "@/atoms/userAtom";
+import postsAtom from "@/atoms/postsAtom";
+import  {PostDropDownMenu}  from "./PostDropdownMenu";
 
 
-// shuffle and get a random image from these images
-const bgPics = [ayahBgPic, ayahBgPic3, ayahBgPic4];
-const randomBgPic = bgPics[Math.floor(Math.random() * bgPics.length)];
 
 
 // types interface
 interface PostCardProps {
-    postId: string;
-    likes: number;
-    replies: number;
-    postText: string;
-    postExtra?: string;
-    postImg?: string;
+    post: {
+        _id: string;
+        postedBy: {
+            _id: string;
+            name: string;
+            username: string;
+            profilePic: string;
+        };
+        text: string;
+        extra: string;
+        likes: string[]; // means array of strings
+        // replies: array of objects
+        replies: {
+            userId: string;
+            text: string;
+            userProfilePic: string;
+            username: string;
+            _id: string;
+        }[];
 
-    name: string;
-    username: string;
-    profilePic: string;
-    ayah: string;
+    };
+
+    postedBy: string;
 }
 
 
-const PostCard: React.FC<PostCardProps> = ({postId, likes, replies, postText, postImg, name, username, profilePic, ayah}) => {
+const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
+
+    
+
+    const currentUser = useRecoilValue(userAtom)
+
+    const [liked, setLiked] = useState(post.likes.includes(currentUser?._id));
+    const [liking, setLiking] = useState(false);
+    
+    const [posts, setPosts] = useRecoilState(postsAtom)
 
 
-    const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(likes);
-    const [loading, setLoading] = useState(false);
+    console.log("post from postCard", post)
+    console.log("postedBy props", postedBy)
+
+    
+    const navigate = useNavigate()
 
     const handleLike = async () => {
 
-        if (loading) return; // if already loading, return
+        if (!currentUser) return toast("Login first")
 
-        setLoading(true)
+        if (liking) return; // if already loading, return
+
+        setLiking(true)
 
         // implement like functionality
 
         try {
 
             // server actions
-            const res = await fetch(`/api/posts/like/${postId}`, {
+            const res = await fetch(`/api/posts/like/${post._id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -72,16 +96,39 @@ const PostCard: React.FC<PostCardProps> = ({postId, likes, replies, postText, po
             }
 
             // update the like count
-            setLiked(!liked)
-            setLikeCount(liked? likeCount - 1 : likeCount + 1)
+            if (!liked) {
 
-            toast(data.message)
+                const updatedPosts = posts.map( (p) => {
+                    if (p._id === post._id) {
+                        return {...p, likes: [...p.likes, currentUser._id]}
+                    }
+
+                    return p;
+                })
+
+                setPosts(updatedPosts)
+
+
+            } else {
+                // remove the id of the current user from the likes array of the post
+                const updatedPosts = posts.map((p: typeof post) => {
+                    if (p._id === post._id) {
+                        return { ...p, likes: p.likes.filter((id: string) => id !== currentUser._id) };
+                    }
+
+                    return p;
+                });
+
+                setPosts(updatedPosts)
+            }
+
+            setLiked(!liked)
 
 
         } catch (error) {
             toast(`${error}`)
         } finally {
-            setLoading(false)
+            setLiking(false)
         }
 
 
@@ -90,36 +137,57 @@ const PostCard: React.FC<PostCardProps> = ({postId, likes, replies, postText, po
     }
 
 
+    
+  
+
+
 
 
 
     return (
-        // <Link to="/mehedi/post/1">
 
             <Card className="mb-8">
                 <CardHeader className="flex flex-row justify-between">
-                    <div className="flex flex-row gap-2">
+
+                    {/* Navigate to /username on clicking on this div */}
+
+                    
+                    <div className="flex flex-row gap-2" onClick={ (e)=> {
+                        e.preventDefault();
+                        navigate(`/${post?.postedBy?.username}`)
+                    } } >
+
                         <img 
                             className="h-10 w-10 rounded-full object-cover border border-gray-700 p-0.5" 
-                            src={profilePic} alt="" />
+                            src={post?.postedBy?.profilePic} alt="" />
                         <div>
-                            <CardTitle>{name}</CardTitle>
-                            <CardDescription>@{username}</CardDescription>
+                            <CardTitle>{post?.postedBy?.name}</CardTitle>
+                            <CardDescription>@{post?.postedBy?.username}</CardDescription>
                         </div>
+                        
                     </div>
 
-                    <PostDropDownMenu />
+
+                    <div className="flex gap-5 items-center">
+                        <small className="text-sm text-gray-400">
+                            {  formatDistanceToNow(new Date(post.createdAt))  } ago
+                        </small>
+
+                        <PostDropDownMenu post={post} />
+
+                    </div>
+
                     
                 </CardHeader>
 
 
-                <Link to="/mehedi/post/1">
+                <Link to={`/${post.postedBy.username}/post/${post._id}`} className="cursor-pointer">
                     <CardContent>
-                        <p>
+                        <pre className="bangla-text whitespace-pre-wrap">
                             
-                            {postText}
+                            {post.text}
 
-                        </p>
+                        </pre>
                     </CardContent>
                 </Link>
 
@@ -130,7 +198,7 @@ const PostCard: React.FC<PostCardProps> = ({postId, likes, replies, postText, po
                         //     <img className="rounded-lg object-cover" src={postImg} alt="" />
                         // )
 
-                        ayah !== "" && (
+                        post.extra !== "" && (
                             <div className="relative w-full">
                                 <img 
                                     className="rounded-lg object-cover w-full h-auto" 
@@ -138,7 +206,7 @@ const PostCard: React.FC<PostCardProps> = ({postId, likes, replies, postText, po
                                     alt="" 
                                 />
                                 <h1 className="absolute inset-0 flex items-center justify-center text-amber-950 text-sm md:text-2xl font-bold  rounded-lg px-4 md:px-8 text-center max-w-[90%] mx-auto" style={{ fontFamily: "'Amiri', serif" }}>
-                                    {ayah}
+                                    {post.extra}
                                 </h1>
                             </div>
                         )
@@ -162,21 +230,22 @@ const PostCard: React.FC<PostCardProps> = ({postId, likes, replies, postText, po
                             className={`cursor-pointer ${liked? "text-red-500 fill-red-500" : "text-white" }`}
                         />
                         <span className="text-sm text-gray-100">
-                            {likeCount}
+                            {post.likes.length}
                         </span>
                     </div>
 
 
-                    {/* <Link to="/mehedi/post/1"> */}
+                    
+                    <Link to={`/${post.postedBy.username}/post/${post._id}`} className="cursor-pointer">
                         <div className="flex flex-row gap-1 items-center">
                             
                                 <MessageCircle size={20} />
                                 <span className="text-sm text-gray-100">
-                                    {replies}
+                                    {post.replies.length}
                                 </span>
                             
                         </div>
-                    {/* </Link> */}
+                    </Link>
 
 
                     <div>

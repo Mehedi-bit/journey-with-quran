@@ -2,28 +2,35 @@
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 
 
 interface CommentCardProps {
-    name: string;
-    username: string;
-    comment: string;
-    profilePic: string;
-    likes: number;
+    reply: {
+        userId: string;
+        text: string;
+        userProfilePic: string;
+        username: string;
+        name: string;
+        _id: string;
+    }
 }
 
 
 
-const CommentCard: React.FC<CommentCardProps> = ({name, username, comment, profilePic, likes }) => {
+const CommentCard: React.FC<CommentCardProps> = ({ reply }) => {
 
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(likes);
+    const { userId, text, userProfilePic, username, name } = reply;
 
-  const handleLike = () => {
-        setLiked(!liked)
-        setLikeCount(liked? likeCount-1 : likeCount+1)
-  }
+    const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(1);
+
+    const handleLike = () => {
+            setLiked(!liked)
+            setLikeCount(liked? likeCount-1 : likeCount+1)
+    }
+
 
 
 
@@ -31,26 +38,30 @@ const CommentCard: React.FC<CommentCardProps> = ({name, username, comment, profi
     <div>
         <div className="flex flex-row gap-3">
 
-            <Avatar>
-                <AvatarImage src={profilePic} alt="user" />
-                <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            <Link to={`/${username}`}>
+                <Avatar>
+                    <AvatarImage src={userProfilePic} alt="user" />
+                    <AvatarFallback>JQ</AvatarFallback>
+                </Avatar>
+            </Link>
 
 
             <div className="w-full flex flex-col gap-2">
 
                 <div className="flex flex-col gap-1 border rounded-lg p-3 w-full bg-neutral-900">
                     <h2 className="font-semibold">{name}</h2>
-                    <p className="text-sm text-gray-200">{comment}</p>
+                    <p className="text-sm text-gray-200">{text}</p>
                 </div>
 
-                <div className="flex flex-row items-center gap-2">
+
+                {/* @TODO: LOVE REACT ON COMMENT */}
+                {/* <div className="flex flex-row items-center gap-2">
                     <Heart size={18} className={`ml-3 cursor-pointer ${liked? "text-rose-500 fill-rose-500" : "text-gray-500"}`}
                         onClick={handleLike}
                     />
 
                     <span className="text-sm text-gray-500">{likeCount}</span>
-                </div>
+                </div> */}
 
             </div>
 

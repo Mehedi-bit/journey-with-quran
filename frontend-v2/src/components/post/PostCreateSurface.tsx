@@ -127,8 +127,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BookMarked, Image as ImageIcon, Link, Loader2, Send } from "lucide-react";
-import { set } from "react-hook-form";
 import { toast } from "sonner";
+import { useRecoilState } from "recoil";
+import postsAtom from "@/atoms/postsAtom";
 interface PostCreatorProps {
   currentUserInfo: any;
 }
@@ -140,6 +141,7 @@ const PostCreateSurface = ({
   const [extraContentForPhoto, setExtraContentForPhoto] = useState("");
   const [activeTab, setActiveTab] = useState("write");
   const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useRecoilState(postsAtom)
 
 
 
@@ -184,7 +186,7 @@ const PostCreateSurface = ({
       setContent("");
       setExtraContentForPhoto("");
 
-      
+      setPosts([data, ...posts])
 
 
 

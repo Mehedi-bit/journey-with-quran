@@ -5,10 +5,12 @@ import { useEffect, useState } from "react"
 import { LoaderIcon } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "../ui/button"
+import { useRecoilState } from "recoil"
+import postsAtom from "@/atoms/postsAtom"
 
 const SpecificUserPage = () => {
     const [userData, setUserData] = useState(null)
-    const [posts, setPosts] = useState([]) // Store user posts
+    const [posts, setPosts] = useRecoilState(postsAtom) // Store user posts
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const { username } = useParams<{ username: string }>()
@@ -52,7 +54,8 @@ const SpecificUserPage = () => {
         }
 
         getUserData()
-    }, [username])
+    }, [username, setPosts])
+
 
     if (loading) {
         return (
@@ -83,16 +86,18 @@ const SpecificUserPage = () => {
                 posts.map((post) => (
                     <PostCard
                         key={post._id}
-                        postId={post._id} // Post ID
-                        likes={post.likes.length} // Likes array length
-                        replies={post.replies.length} // Replies array length
-                        postText={post.text} // Combine text and extra if exists
-                        postExtra={post.extra || null} // If extra exists, show it
-                        postImg={post.image || null} // If image exists, show it
+                        // postId={post._id} // Post ID
+                        // likes={post.likes.length} // Likes array length
+                        // replies={post.replies.length} // Replies array length
+                        // postText={post.text} // Combine text and extra if exists
+                        // postExtra={post.extra || null} // If extra exists, show it
+                        // postImg={post.image || null} // If image exists, show it
 
-                        name={post.postedBy.name} 
-                        username={post.postedBy.username} 
-                        profilePic={post.postedBy.profilePic} 
+                        // name={post.postedBy.name} 
+                        // username={post.postedBy.username} 
+                        // profilePic={post.postedBy.profilePic} 
+                        post={post}
+                        postedBy={post.postedBy}
                     />
                 ))
             ) : (

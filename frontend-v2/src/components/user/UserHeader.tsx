@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { DropdownButton } from "./DropdownButton";
 import SelectPostOrRepliesTabs from "./SelectPostOrRepliesTabs";
 import { userAtom } from "@/atoms/userAtom";
-import { Edit, Loader, Loader2 } from "lucide-react";
+import { Dot, Edit, Loader, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "../ui/badge";
 import { useState } from "react";
@@ -142,12 +142,14 @@ const UserHeader: React.FC<UserHeaderProps> = ({userData}) => {  // user that we
                         
                     </div>
 
-                    <div className="following-container flex flex-row gap-8">
-                        <p className="m-0 text-gray-400"> <span className="font-bold text-white">{userData.followers.length}</span> followers</p>
-                        <p className="m-0 text-gray-400"><span className="font-bold text-white">{userData.following.length}</span> following</p>
+                    <p className="text-gray-500">@{userData.username}</p>
+                    
+                    <div className="following-container flex flex-row gap-5 items-center">
+                        <p className="m-0 text-gray-400"> <span className="mr-1">{userData.followers.length}</span>    followers</p>
+                     
+                        <p className="m-0 text-gray-400"><span className="mr-1">{userData.following.length}</span>  following</p>
                     </div>
                     
-                    <p className="text-gray-500">@{userData.username}</p>
                     <p className="text-gray-300 text-sm">{userData.bio}</p>
                     
                     {/* @TODO: Show this only if it is current user */}

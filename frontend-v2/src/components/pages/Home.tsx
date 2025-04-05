@@ -4,10 +4,11 @@ import PostCreateSurface from "../post/PostCreateSurface";
 import { LoaderIcon } from "lucide-react";
 import { toast } from "sonner";
 import { userAtom } from "@/atoms/userAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import postsAtom from "@/atoms/postsAtom";
 
 const Home = () => {
-    const [posts, setPosts] = useState([]); // Store all posts
+    const [posts, setPosts] = useRecoilState(postsAtom); // Store all posts
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -38,7 +39,7 @@ const Home = () => {
         };
 
         fetchPosts();
-    }, []);
+    }, [setPosts]);
 
     console.log("posts", posts)
 
@@ -69,16 +70,18 @@ const Home = () => {
                 posts.map((post) => (
                     <PostCard
                         key={post._id}
-                        postId={post._id}
-                        likes={post.likes.length}
-                        replies={post.replies.length}
-                        postText={post.text}
-                        postExtra={post.extra || null}
-                        postImg={post.image || null}
-                        name={post.postedBy?.name || "Unknown"}
-                        username={post.postedBy?.username || "Unknown"}
-                        profilePic={post.postedBy?.profilePic}
-                        ayah={post?.extra}
+                        // postId={post._id}
+                        // likes={post.likes.length}
+                        // replies={post.replies.length}
+                        // postText={post.text}
+                        // postExtra={post.extra || null}
+                        // postImg={post.image || null}
+                        // name={post.postedBy?.name || "Unknown"}
+                        // username={post.postedBy?.username || "Unknown"}
+                        // profilePic={post.postedBy?.profilePic}
+                        // ayah={post?.extra}
+                        post={post}
+                        postedBy={post.postedBy}
                     />
                 ))
             ) : (

@@ -181,9 +181,13 @@ const Navbar = ({
           </div>
           <div className="flex gap-10 items-center">
 
+          {
+            userInfo && (
             <Link to={`/${userInfo.username}`}>
               <UserRound size={20} />
             </Link>
+            )
+          }
 
 
             {
@@ -277,12 +281,15 @@ const Navbar = ({
 
                   <div className="flex flex-col gap-5">
 
-
+                    {
+                      userInfo && (
                       <Button variant="outline">
                         <Link to={`/${userInfo.username}`}>
                           <UserRound size={20} />
                         </Link>
                       </Button>
+                      )
+                    }
                     
 
                     {

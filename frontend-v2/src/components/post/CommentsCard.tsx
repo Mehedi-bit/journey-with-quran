@@ -1,43 +1,118 @@
+import { useRecoilState, useRecoilValue } from "recoil"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { Textarea } from "../ui/textarea"
 import CommentCard from "./CommentCard"
+import { userAtom } from "@/atoms/userAtom"
+import { useState } from "react"
+import { toast } from "sonner"
+import { set } from "react-hook-form"
+import { LoaderCircle } from "lucide-react"
+import postsAtom from "@/atoms/postsAtom"
 
 
 
 
 
-const replies = [
-  {
-    userId: 1,
-    text: "I also love medina",
-    userProfilePic: "https://api.dicebear.com/9.x/rings/svg?seed=Fatima",
-    username: "ahmad_nufais",
-    name: "Ahmad Nufais",
-  },
+// const replies = [
+//   {
+//     userId: 1,
+//     text: "I also love medina",
+//     userProfilePic: "https://api.dicebear.com/9.x/rings/svg?seed=Fatima",
+//     username: "ahmad_nufais",
+//     name: "Ahmad Nufais",
+//   },
 
-  {
-    userId: 2,
-    text: "I also love medina",
-    userProfilePic: "https://api.dicebear.com/9.x/rings/svg?seed=Destiny",
-    username: "ahmad_nufais",
-    name: "Ahmad Nufais",
-  },
+//   {
+//     userId: 2,
+//     text: "I also love medina",
+//     userProfilePic: "https://api.dicebear.com/9.x/rings/svg?seed=Destiny",
+//     username: "ahmad_nufais",
+//     name: "Ahmad Nufais",
+//   },
 
-  {
-    userId: 3,
-    text: "I also love medina",
-    userProfilePic: "https://api.dicebear.com/9.x/rings/svg?seed=Destiny",
-    username: "ahmad_nufais",
-    name: "Ahmad Nufais",
-  },
+//   {
+//     userId: 3,
+//     text: "I also love medina",
+//     userProfilePic: "https://api.dicebear.com/9.x/rings/svg?seed=Destiny",
+//     username: "ahmad_nufais",
+//     name: "Ahmad Nufais",
+//   },
 
   
-]
+// ]
 
 
 
-const CommentsCard = () => {
+const CommentsCard = ({post, userData}) => {
+
+  const [comment, setComment] = useState("")
+  const [loading, setLoading] = useState(false)
+  const currentUserInfo = useRecoilValue(userAtom)
+  const [posts, setPosts] = useRecoilState(postsAtom)
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!currentUserInfo) return toast("You need to login to comment");
+
+    if (loading) return;
+
+    setLoading(true)
+
+    try {
+      
+      // server actions
+      const res = await fetch(`/api/posts/reply/${post._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          text: comment
+        })
+      })
+
+
+      const data = await res.json()
+
+      if (data.error) {
+        console.log(data.error)
+        toast(data.error)
+        return;
+      }
+
+      
+      // otherwise, success
+
+      const updatedPosts = posts.map((p)=> {
+        if (p._id == post._id) {
+          return {...p, replies: [...p.replies, data]}
+        }
+
+        return p;
+      })
+
+      setPosts(updatedPosts)
+
+      console.log(data)
+      setLoading(false)
+      setComment("")
+
+
+    
+    } catch (error) {
+      toast(`${error}`, {
+        description: "Failed to submit comment"
+      })
+    } finally {
+      setLoading(false)
+    }
+
+
+  }
+
+
 
 
 
@@ -54,20 +129,22 @@ const CommentsCard = () => {
 
 
 
-        {/* COMMENTER | your comment area */}
+        {/* @TODO: (Complete but can be optimized by separate component) COMMENTER | YOUR COMMENT HERE */}
 
         <div className="flex flex-row gap-3">
 
           {/* current user */}
           <Avatar>
-            <AvatarImage src="https://api.dicebear.com/9.x/rings/svg?seed=Destiny" alt="User" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={currentUserInfo?.profilePic} alt="User" />
+            <AvatarFallback>JQ</AvatarFallback>
           </Avatar>
 
-          <div className="flex flex-col w-full gap-4">
-            <Textarea placeholder="Type your comment here." />
-            <Button className="w-24">Submit</Button>
-          </div>
+          <form className="flex flex-col w-full gap-4" onSubmit={handleCommentSubmit}>
+            <Textarea value={comment} placeholder="Type your comment here." onChange={(e) => setComment(e.target.value)} />
+            <Button size="sm" className="w-20">
+              {loading ? <LoaderCircle className="animate-spin"/> : "Comment"}
+            </Button>
+          </form>
 
         </div>
 
@@ -76,31 +153,17 @@ const CommentsCard = () => {
       {/* comments or replies - TODO: make it dynamic */}
 
 
-      <CommentCard
-        comment="Looks really good. I love this place."
-        name="Fatima"
-        username="fatima"
-        profilePic="https://api.dicebear.com/9.x/micah/svg?seed=Brian"
-        likes={100}
-      />
 
-      <CommentCard
-        comment="Looks really good. I love this place."
-        name="Umar"
-        username="umar_123"
-        profilePic="https://api.dicebear.com/9.x/lorelei/svg?seed=Emery"
-        likes={98}
-      />
+      {
 
+        post.replies.map((reply, index) => (
+          <CommentCard
+            key={reply._id}
+            reply={reply}
+          />
+        ))
 
-      <CommentCard
-        comment="Looks really good. I love this place."
-        name="Khalid"
-        username="khalid"
-        profilePic="https://api.dicebear.com/9.x/lorelei/svg?seed=Sawyer"
-        likes={76}
-      />
-
+      }
 
 
 

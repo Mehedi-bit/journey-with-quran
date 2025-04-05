@@ -64,13 +64,16 @@ const getPost = async (req, res) => {
 
         // check if the post exists
         const post = await Post.findById(postId)
+                    .populate("postedBy", "_id name username profilePic")
+                                
+        
         if (!post) {
             return res.status(404).json({ error: "Post not found" })
         }
 
 
         // send a response
-        res.status(200).json({ post })
+        res.status(200).json(post)
 
     } catch (err) {
         res.status(500).json({ error: err.message })
@@ -197,7 +200,7 @@ const replyToPost = async (req, res) => {
 
 
         // create a reply object
-        const newReply = {
+        const reply = {
             userId,
             text,
             userProfilePic,
@@ -206,13 +209,13 @@ const replyToPost = async (req, res) => {
         }
 
         // add the reply to the post
-        post.replies.push(newReply)  // js push operation
+        post.replies.push(reply)  // js push operation
         // save the post to the database
         await post.save()
 
 
         // send a response
-        res.status(201).json({ message: "Reply added successfully", post })
+        res.status(201).json( reply )
 
 
 

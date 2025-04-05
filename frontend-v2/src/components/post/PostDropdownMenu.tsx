@@ -1,4 +1,6 @@
 
+import postsAtom from "@/atoms/postsAtom"
+import { userAtom } from "@/atoms/userAtom"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { EllipsisVertical } from "lucide-react"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { toast } from "sonner"
 
 
@@ -16,13 +19,54 @@ import { toast } from "sonner"
 
 
 
-export function PostDropDownMenu() {
+export function PostDropDownMenu({post}) {
 
+  const [posts, setPosts] = useRecoilState(postsAtom)
 
+  const currentUser = useRecoilValue(userAtom)
 
   const currentTime = new Date().toLocaleTimeString().toString()
 
   
+
+
+  const handleDeletePost = async (e) => {
+
+    e.preventDefault()
+
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+
+      try {
+        // server actions
+        const res = await fetch(`/api/posts/${post._id}`, {
+          method: "DELETE"
+        })
+
+        const data = await res.json()
+
+        if (data.error) {
+          toast(data.error)
+          return;
+        }
+
+        // otherwise, okay, post deleted
+        toast(data.message)
+
+        setPosts(prev => prev.filter( p => p._id !== post._id ))
+
+
+      } catch (error) {
+        toast(`${error}`)
+      }
+  }
+
+
+  if (!post) {
+    console.log("Post prop is undefined at first render");
+    return null;
+  }
+
+
 
 
   return (
@@ -44,7 +88,7 @@ export function PostDropDownMenu() {
             })
 
           }}>
-            Save Post
+            Save the Post
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
           
@@ -52,6 +96,20 @@ export function PostDropDownMenu() {
             Report
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
+
+
+          {
+
+            (currentUser && currentUser._id === post.postedBy._id) &&
+              
+                <DropdownMenuItem onClick={handleDeletePost}>
+                  Delete the post
+                  <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+                </DropdownMenuItem>
+            
+          }
+
+          
           
         </DropdownMenuGroup>
         

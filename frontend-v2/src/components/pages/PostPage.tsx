@@ -6,15 +6,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Heart, Share2, MessageCircle } from "lucide-react";
+import { Heart, Share2, MessageCircle, LoaderIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { PostDropDownMenu } from "../post/PostDropdownMenu";
 import CommentsCard from "../post/CommentsCard";
 
 import ayahBgPic from "../../assets/ayah_bg.png";
 import ayahBgPic3 from "../../assets/ayah_bg3.jpg";
 import ayahBgPic4 from "../../assets/ayah_bg4.jpg";
+import { useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { useRecoilState } from "recoil";
+import postsAtom from "@/atoms/postsAtom";
 
 
 // shuffle and get a random image from these images
@@ -28,16 +32,145 @@ const randomBgPic = bgPics[Math.floor(Math.random() * bgPics.length)];
 const PostPage = () => {
 
 
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(1);
+    const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(1);
+    const [posts, setPosts] = useRecoilState(postsAtom)
+    const [loading, setLoading] = useState(true);
+    const [userData, setUserData] = useState(null);
+    const [userLoading, setUserLoading] = useState(true);
 
-  const handleLike = () => {
-      setLiked(!liked)
-      setLikeCount( liked? likeCount-1 : likeCount+1)
-  }
+    //   get postID from url
+    const { pid } = useParams<{ pid: string }>();
+    console.log("pid:", pid)
+
+    const handleLike = () => {
+        setLiked(!liked)
+        setLikeCount( liked? likeCount-1 : likeCount+1)
+    }
+
+
+    const currentPost = posts[0]
+
+    useEffect(() => {
+
+
+        // fetch post by postID
+        
+        const getPost = async () => {
+
+            setLoading(true)
+
+            try {
+                // server actions
+            const res = await fetch(`/api/posts/${pid}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+
+
+            // get response data
+            const data = await res.json()
+
+            if (data.error) {
+                console.log(data.error)
+                // show toast
+                toast('Failed to fetch post', {
+                    description: data.error
+                })
+                return;
+            }
+
+            // otherwise, okay, setPost
+            console.log(data)
+
+            setPosts([data])
+            setLoading(false)
+
+            } catch (error) {
+                toast(`${error}`)
+            }   finally {
+                setLoading(false)
+            }
+            
+
+        }
+
+
+        // call the function
+        getPost()
 
 
 
+    }, [pid, setPosts])
+
+
+    // get the user who posted this post
+    
+    const postedBy = currentPost?.postedBy;
+
+    console.log("postedBy:", postedBy)
+
+    useEffect(()=>{
+
+        const getUser = async () => {
+
+            setUserLoading(true)
+
+            try {
+                // server actions
+                const res = await fetch(`/api/users/profile/${postedBy._id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+
+        
+                const data = await res.json()
+                
+
+                if (data.error) {
+                    console.log(data.error)
+                    // show toast
+                    toast('Failed to fetch user', {
+                        description: data.error
+                    })
+                    return;
+                }
+
+                // otherwise, okay, set the userData
+                console.log("userData", data)
+
+                setUserData(data)
+                setUserLoading(false)
+
+
+            } catch (error) {
+                toast(`${error}`)
+            }  finally {
+                setUserLoading(false)
+            }
+        }
+
+        // 🔥 call the function only when the postedBy is available
+        if (postedBy) {
+            getUser()
+        }
+        
+    }, [postedBy])
+
+
+    if (loading || userLoading) {
+        return (
+            <div className="flex justify-center items-center h-[80vh]">
+                <LoaderIcon className="animate-spin" />
+            </div>
+        );
+    }
+
+    if (!currentPost || !userData) return null;
 
 
   return (
@@ -49,14 +182,14 @@ const PostPage = () => {
                   <div className="flex flex-row gap-2">
                       <img 
                           className="h-10 w-10 rounded-full object-cover border border-gray-700 p-0.5" 
-                          src="https://api.dicebear.com/9.x/rings/svg?seed=Destiny" alt="" />
+                          src={userData?.profilePic} alt="" />
                       <div>
-                          <CardTitle>Mehedi Hasan</CardTitle>
-                          <CardDescription>@mehedi_hasan</CardDescription>
+                          <CardTitle>{userData?.name}</CardTitle>
+                          <CardDescription>@{userData?.username}</CardDescription>
                       </div>
                   </div>
 
-                  <PostDropDownMenu />
+                  <PostDropDownMenu post={currentPost} />
                   
               </CardHeader>
 
@@ -64,7 +197,7 @@ const PostPage = () => {
                 <CardContent>
                     <p>
                         
-                        I love medina
+                        {currentPost?.text}
 
                     </p>
                 </CardContent>
@@ -74,18 +207,21 @@ const PostPage = () => {
               <CardContent>
                       
 
-                <div className="relative w-full">
-                    <img 
-                        className="rounded-lg object-cover w-full h-auto" 
-                        src={ayahBgPic}   // randomBgPic also can be used
-                        alt="" 
-                    />
-                    <h1 className="absolute inset-0 flex items-center justify-center text-amber-950 text-sm md:text-2xl font-bold  rounded-lg px-4 md:px-8 text-center max-w-[90%] mx-auto" style={{ fontFamily: "'Amiri', serif" }}>
-                        ٱلْحَمْدُ لِلَّهِ ٱلَّذِىٓ أَنزَلَ عَلَىٰ عَبْدِهِ ٱلْكِتَـٰبَ وَلَمْ يَجْعَل لَّهُۥ عِوَجَاۜ
-                        ٱلْحَمْدُ لِلَّهِ ٱلَّذِىٓ أَنزَلَ عَلَىٰ عَبْدِهِ ٱلْكِتَـٰبَ وَلَمْ يَجْعَل لَّهُۥ عِوَجَاۜ
-                        ٱلْحَمْدُ لِلَّهِ ٱلَّذِىٓ أَنزَلَ عَلَىٰ عَبْدِهِ ٱلْكِتَـٰبَ وَلَمْ يَجْعَل لَّهُۥ عِوَجَاۜ
-                    </h1>
-                </div>
+                {
+                    currentPost?.extra !=="" && (
+                        <div className="relative w-full">
+                            <img 
+                                className="rounded-lg object-cover w-full h-auto" 
+                                src={ayahBgPic}   
+                                alt="" 
+                            />
+                            <h1 className="absolute inset-0 flex items-center justify-center text-amber-950 text-sm md:text-2xl font-bold  rounded-lg px-4 md:px-8 text-center max-w-[90%] mx-auto" style={{ fontFamily: "'Amiri', serif" }}>
+                                {currentPost?.extra}
+                            </h1>
+                        </div>
+                    )
+                }
+                
 
 
               </CardContent>
@@ -113,7 +249,7 @@ const PostPage = () => {
                   <div className="flex flex-row gap-1 items-center">
                       <MessageCircle size={20} />
                       <span className="text-sm text-gray-100">
-                          5
+                            {currentPost?.replies.length}
                       </span>
                   </div>
 
@@ -128,7 +264,7 @@ const PostPage = () => {
 
               {/* COMMENTS HERE */}
 
-              <CommentsCard />
+              <CommentsCard post={currentPost} userData={userData} />
 
               
 
