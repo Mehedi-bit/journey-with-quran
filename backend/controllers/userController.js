@@ -152,7 +152,7 @@ const loginUser = async (req, res) => {
         // If both checks pass, generate token and send response
         const token = generateTokenAndSetCookie(user._id, res)
 
-        console.log("Here is the token: ", token)
+        
 
         res.status(200).json({
             _id: user._id,
@@ -276,7 +276,7 @@ const updateUser = async (req, res) => {
 
     let { name, email, username, password, bio, profilePic } = req.body
 
-    console.log("cookie found in updateUser: ", req.cookies.jwt)
+    
 
 
     try {
@@ -384,7 +384,7 @@ const updateUser = async (req, res) => {
             
     } catch (err) {
         res.status(500).json({ error: err.message })
-        console.log("Error from updateUser controller: ", err.message)
+        console.log("Error from updateUser controller: ", err)
     }
 
 

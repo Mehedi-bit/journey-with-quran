@@ -17,8 +17,9 @@ import ayahBgPic3 from "../../assets/ayah_bg3.jpg";
 import ayahBgPic4 from "../../assets/ayah_bg4.jpg";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import postsAtom from "@/atoms/postsAtom";
+import { userAtom } from "@/atoms/userAtom";
 
 
 // shuffle and get a random image from these images
@@ -32,24 +33,94 @@ const randomBgPic = bgPics[Math.floor(Math.random() * bgPics.length)];
 const PostPage = () => {
 
 
-    const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(1);
+    
+    
     const [posts, setPosts] = useRecoilState(postsAtom)
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState(null);
     const [userLoading, setUserLoading] = useState(true);
+    const currentUser = useRecoilValue(userAtom)
+
+    const currentPost = posts[0]
+
+    const [liked, setLiked] = useState(currentPost?.likes.includes(currentUser?._id));
+    const [liking, setLiking] = useState(false);
+    
 
     //   get postID from url
     const { pid } = useParams<{ pid: string }>();
     console.log("pid:", pid)
 
-    const handleLike = () => {
-        setLiked(!liked)
-        setLikeCount( liked? likeCount-1 : likeCount+1)
+    const handleLike = async () => {
+
+        if (!currentUser) return toast("Login first")
+
+        if (liking) return; // if already loading, return
+
+        setLiking(true)
+
+        // implement like functionality
+
+        try {
+
+            // server actions
+            const res = await fetch(`/api/posts/like/${currentPost?._id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+
+            const data = await res.json();
+
+            if (!res.ok || data.error) {
+                toast(data.error)
+                return;
+            }
+
+            // update the like count
+            if (!liked) {
+
+                const updatedPosts = posts.map( (p) => {
+                    if (p._id === currentPost?._id) {
+                        return {...p, likes: [...p.likes, currentUser._id]}
+                    }
+
+                    return p;
+                })
+
+                setPosts(updatedPosts)
+
+
+            } else {
+                // remove the id of the current user from the likes array of the post
+                const updatedPosts = posts.map((p) => {
+                    if (p._id === currentPost?._id) {
+                        return { ...p, likes: p.likes.filter((id) => id !== currentUser._id) };
+                    }
+
+                    return p;
+                });
+
+                setPosts(updatedPosts)
+            }
+
+            setLiked(!liked)
+
+
+        } catch (error) {
+            toast(`${error}`)
+        } finally {
+            setLiking(false)
+        }
+
+
+
+
     }
 
 
-    const currentPost = posts[0]
+    
 
     useEffect(() => {
 
@@ -110,7 +181,9 @@ const PostPage = () => {
     
     const postedBy = currentPost?.postedBy;
 
-    console.log("postedBy:", postedBy)
+
+    
+    console.log("postedBy from postPage", postedBy)
 
     useEffect(()=>{
 
@@ -195,11 +268,11 @@ const PostPage = () => {
 
 
                 <CardContent>
-                    <p>
+                    <pre className="bangla-text whitespace-pre-wrap">
                         
                         {currentPost?.text}
 
-                    </p>
+                    </pre>
                 </CardContent>
 
 
@@ -242,10 +315,10 @@ const PostPage = () => {
                           className={`cursor-pointer ${liked? "text-red-500 fill-red-500" : "text-white" }`}
                       />
                       <span className="text-sm text-gray-100">
-                          {likeCount}
+                          {currentPost?.likes.length}
                       </span>
                   </div>
-
+ 
                   <div className="flex flex-row gap-1 items-center">
                       <MessageCircle size={20} />
                       <span className="text-sm text-gray-100">

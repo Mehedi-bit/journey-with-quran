@@ -4,9 +4,7 @@ const User = require('../models/userModel.js')
 
 const protectRoute = async (req, res, next) => {
 
-    console.log("Protect Route Middleware touched")
-    console.log("Cookies", req.cookies.jwt)
-    console.log("Headers", req.headers)
+    
 
     
 

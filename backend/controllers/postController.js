@@ -37,12 +37,16 @@ const createPost = async (req, res) => {
         })
 
         // save the post to the database
-        await newPost.save()
+        const savedPost = await newPost.save()
+
+        // populate the postedBy field and replies.userId field
+        const populatedPost = await Post.findById(savedPost._id)
+                        .populate("postedBy", "_id name username profilePic")
 
 
 
         // send a response
-        res.status(201).json(newPost)
+        res.status(201).json(populatedPost)
 
 
 
@@ -153,7 +157,7 @@ const likeUnlikePost = async (req, res) => {
             // like the post
             await Post.updateOne(
                 {_id: postId},
-                { $push: { likes: req.user._id } }
+                { $addToSet: { likes: req.user._id } }
             )
 
             res.status(200).json({ message: "Post Liked successfully" })

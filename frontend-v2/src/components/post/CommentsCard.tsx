@@ -135,7 +135,7 @@ const CommentsCard = ({post, userData}) => {
 
           {/* current user */}
           <Avatar>
-            <AvatarImage src={currentUserInfo?.profilePic} alt="User" />
+            <AvatarImage className="object-cover" src={currentUserInfo?.profilePic} alt="User" />
             <AvatarFallback>JQ</AvatarFallback>
           </Avatar>
 
