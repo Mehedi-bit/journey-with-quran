@@ -9,7 +9,6 @@ const cloudinary = require('cloudinary').v2
 
 
 
-
 // Get a user profile
 const getUserProfile = async (req, res) => {
 
@@ -328,28 +327,33 @@ const updateUser = async (req, res) => {
 
 
 
+        // handle profilePic upload or direct selection
         // if the profilePic is provided from the frontend, then upload the image to cloudinary and update the profilePic before saving in the database
         if (profilePic) {
+            const isBase64 = profilePic.startsWith("data:image");
 
-            // if the user already has a profilePic, then delete the previous profilePic from cloudinary
-            if (user.profilePic) {
-                await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split(".")[0]);
+            if (isBase64) {
+                // delete previous image from cloudinary (if it was uploaded)
+                if (user.profilePic && user.profilePic.includes("cloudinary.com")) {
+                    const publicId = user.profilePic.split("/").pop().split(".")[0];
+                    await cloudinary.uploader.destroy(publicId);
+                }
+
+                // upload new image to cloudinary
+                const uploadedResponse = await cloudinary.uploader.upload(profilePic);
+                profilePic = uploadedResponse.secure_url;
             }
 
-
-            // upload the profilePic to cloudinary
-            const uploadedResponse = await cloudinary.uploader.upload(profilePic)
-
-            profilePic = uploadedResponse.secure_url
+            // whether uploaded or selected, update it
+            user.profilePic = profilePic;
         }
 
 
-        // update the user
-        user.name = name || user.name
-        user.email = email || user.email
-        user.username = username || user.username
-        user.profilePic = profilePic || user.profilePic
-        user.bio = bio || user.bio
+        // update other fields
+        user.name = name || user.name;
+        user.email = email || user.email;
+        user.username = username || user.username;
+        user.bio = bio || user.bio;
 
 
         // save the user to the database

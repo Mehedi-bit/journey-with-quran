@@ -125,7 +125,12 @@ const usePreviewImage = () => {
         }
     };
 
+    console.log("previewImgUrl", previewImgUrl)
+
     return { handleImageChange, previewImgUrl, setPreviewImgUrl };
 };
+
+
+
 
 export default usePreviewImage;
