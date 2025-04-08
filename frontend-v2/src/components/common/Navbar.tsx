@@ -35,6 +35,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { authStateAtom } from "@/atoms/authAtom";
 import { userAtom } from "@/atoms/userAtom";
 import LogoutButton from "../auth/LogoutButton";
+import FullscreenButton from "./FullscreenButton";
 
 interface MenuItem {
   title: string;
@@ -179,15 +180,19 @@ const Navbar = ({
               </NavigationMenu>
             </div>
           </div>
+
+
           <div className="flex gap-10 items-center">
 
-          {
-            userInfo && (
-            <Link to={`/${userInfo.username}`}>
-              <UserRound size={20} />
-            </Link>
-            )
-          }
+            <FullscreenButton />
+
+            {
+              userInfo && (
+              <Link to={`/${userInfo.username}`}>
+                <UserRound size={20} />
+              </Link>
+              )
+            }
 
 
             {
@@ -280,6 +285,9 @@ const Navbar = ({
                   
 
                   <div className="flex flex-col gap-5">
+
+                    <FullscreenButton />
+                    
 
                     {
                       userInfo && (

@@ -8,6 +8,9 @@ import AuthPage from "./components/pages/AuthPage"
 import { useRecoilValue } from "recoil"
 import { userAtom } from "./atoms/userAtom"
 import UpdateProfilePage from "./components/pages/UpdateProfilePage"
+import ComingSoon from "./components/common/ComingSoon"
+import SurahPage from "./components/pages/SurahPage"
+import TafsirPage from "./components/pages/TafsirPage"
 
 
 
@@ -42,6 +45,11 @@ function App() {
 
                 {/* @TODO: Edit later */}
                 <Route path="/update" element={userInfo? <UpdateProfilePage /> : <Navigate to={"/auth"} />} />
+
+                <Route path="/surahs" element={<SurahPage />} />
+                <Route path="/tafsir" element={<TafsirPage />} />
+                <Route path="/hadith" element={<ComingSoon />} />
+
                 <Route path="*" element={<div className="text-center">Not Found</div>} />
 
 

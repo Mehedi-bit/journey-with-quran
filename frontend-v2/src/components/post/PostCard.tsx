@@ -183,7 +183,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
                 <Link to={`/${post.postedBy.username}/post/${post._id}`} className="cursor-pointer">
                     <CardContent>
-                        <pre className="bangla-text whitespace-pre-wrap">
+                        <pre className="bangla-text whitespace-pre-wrap text-neutral-200">
                             
                             {post.text}
 

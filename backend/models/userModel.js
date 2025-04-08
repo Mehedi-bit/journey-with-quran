@@ -29,7 +29,7 @@ const userSchema = mongoose.Schema({
 
     profilePic: {
         type: String,
-        default: "https://cdn.pixabay.com/photo/2022/01/14/20/21/islam-6938153_1280.jpg"
+        default: ""
     },
 
     followers: {

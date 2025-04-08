@@ -40,7 +40,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ reply }) => {
 
             <Link to={`/${username}`}>
                 <Avatar>
-                    <AvatarImage src={userProfilePic} alt="user" />
+                    <AvatarImage className="object-cover" src={userProfilePic} alt="user" />
                     <AvatarFallback>JQ</AvatarFallback>
                 </Avatar>
             </Link>

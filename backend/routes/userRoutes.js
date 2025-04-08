@@ -1,5 +1,7 @@
 const express = require('express')
-const { signupUser, loginUser, logoutUser, followUnFollowUser, updateUser, getUserProfile, getSuggestedUsers } = require('../controllers/userController.js')
+const { signupUser, loginUser, logoutUser,
+     followUnFollowUser, updateUser, getUserProfile,
+      getSuggestedUsers } = require('../controllers/userController.js')
 const protectRoute = require('../middlewares/protectRoute.js')
 
 
