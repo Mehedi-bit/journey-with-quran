@@ -165,7 +165,7 @@ import { serverUrl } from "@/serverUrl"
   
     })
   
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
 
       if (loading) return;   // if already loading then return to get out of the function to get rid of multiple request at a time if user tries to click multiple times
@@ -433,7 +433,7 @@ import { serverUrl } from "@/serverUrl"
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <PasswordInput placeholder="Your password" {...field} 
-                      onChange={(e) => setInputs({...inputs, password: e.target.value})}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, password: e.target.value})}
                   />
                 </FormControl>
                 <FormDescription>keep it blank if you don't want to update it</FormDescription>
@@ -463,7 +463,7 @@ import { serverUrl } from "@/serverUrl"
               </FormItem>
             )}
           />
-          <Button onClick={handleSubmit} type="submit" className="min-w-20">
+          <Button onClick={(e) => { e.preventDefault(); handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>); }} type="submit" className="min-w-20">
             {loading ? <LoaderCircle className="animate-spin" /> : "Update"}
           </Button>
         </form>

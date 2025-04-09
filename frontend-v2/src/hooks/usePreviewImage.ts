@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import Compressor from "compressorjs";
 
 const usePreviewImage = () => {
-    const [previewImgUrl, setPreviewImgUrl] = useState(null);
+  const [previewImgUrl, setPreviewImgUrl] = useState<string | null>(null);
 
     // const compressImage = async (file) => {
     //     return new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ const usePreviewImage = () => {
 
 
 
-    const compressImage = async (file) => {
+    const compressImage = async (file: File) => {
         return new Promise((resolve, reject) => {
           const initialQuality = 0.8; // Start with good quality
       
@@ -94,7 +94,11 @@ const usePreviewImage = () => {
 
       
 
-    const handleImageChange = async (e) => {
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) {
+            toast.error("No files selected. Please select an image file.");
+            return;
+        }
         const file = e.target.files[0];
         if (!file) return;
 
@@ -108,9 +112,9 @@ const usePreviewImage = () => {
             
             const reader = new FileReader();
             reader.onloadend = () => {
-                setPreviewImgUrl(reader.result);
+                setPreviewImgUrl(reader.result as string);
             };
-            reader.readAsDataURL(compressedFile);
+            reader.readAsDataURL(compressedFile as Blob);
             // reader.readAsDataURL(file);
 
             // console.log(

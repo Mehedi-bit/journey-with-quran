@@ -69,7 +69,7 @@ const Home = () => {
             {posts.length > 0 ? (
                 posts.map((post) => (
                     <PostCard
-                        key={post._id}
+                        key={post?._id}
                         // postId={post._id}
                         // likes={post.likes.length}
                         // replies={post.replies.length}
@@ -81,7 +81,7 @@ const Home = () => {
                         // profilePic={post.postedBy?.profilePic}
                         // ayah={post?.extra}
                         post={post}
-                        postedBy={post.postedBy}
+                        postedBy={post?.postedBy}
                     />
                 ))
             ) : (

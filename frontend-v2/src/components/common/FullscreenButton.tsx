@@ -10,19 +10,19 @@ const FullscreenButton = () => {
       const elem = document.documentElement;
       if (elem.requestFullscreen) {
         elem.requestFullscreen();
-      } else if (elem.webkitRequestFullscreen) { /* Safari */
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) { /* IE11 */
-        elem.msRequestFullscreen();
+      } else if ((elem as any).webkitRequestFullscreen) { /* Safari */
+        (elem as any).webkitRequestFullscreen();
+      } else if ((elem as any).msRequestFullscreen) { /* IE11 */
+        (elem as any).msRequestFullscreen();
       }
     } else {
       // Exit fullscreen
       if (document.exitFullscreen) {
         document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) { /* Safari */
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) { /* IE11 */
-        document.msExitFullscreen();
+      } else if ((document as any).webkitExitFullscreen) { /* Safari */
+        (document as any).webkitExitFullscreen();
+      } else if ((document as any).msExitFullscreen) { /* IE11 */
+        (document as any).msExitFullscreen();
       }
     }
 
