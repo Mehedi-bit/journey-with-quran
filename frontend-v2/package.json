@@ -11,7 +11,6 @@
   // },
   "scripts": {
     "dev": "vite",
-    "type-check": "tsc --noEmit",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
