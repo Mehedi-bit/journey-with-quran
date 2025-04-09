@@ -65,7 +65,7 @@ const TafsirView = ({ surahNumber, translation }) => {
 
   return (
     <div className="p-6 min-h-screen ">
-      <h2 className="text-2xl mb-6 text-center ">
+      <h2 style={{ fontFamily: "Amiri, serif" }} className="text-2xl mb-6 text-center">
         بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
       </h2>
 
@@ -78,7 +78,15 @@ const TafsirView = ({ surahNumber, translation }) => {
             className="mb-8 p-6  rounded-lg shadow-lg border "
           >
             <div className="font-semibold text-xl mb-3 ">
-              <span className="text-2xl">{entry.ayah}</span>
+                <span className="text-2xl" style={{ fontFamily: "Amiri, serif" }}>
+                ﴾
+                </span>
+                <span className="text-2xl" style={{ fontFamily: "Amiri, serif" }}>
+                {entry.ayah}
+                </span>
+                <span className="text-2xl" style={{ fontFamily: "Amiri, serif" }}>
+                ﴿
+                </span>
             </div>
 
             <div
