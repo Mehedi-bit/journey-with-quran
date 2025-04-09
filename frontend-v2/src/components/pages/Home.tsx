@@ -19,7 +19,7 @@ const Home = () => {
             setLoading(true);
             setError(null);
             try {
-                const res = await fetch("/api/posts/all"); // Fetch all posts
+                const res = await fetch("https://journey-with-quran-api.onrender.com/api/posts/all"); // Fetch all posts
                 const data = await res.json();
 
                 if (!res.ok || data.error) {

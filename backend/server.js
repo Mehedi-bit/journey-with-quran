@@ -27,8 +27,13 @@ app.use(cookieParser())  // For reach and access the cookies
 // @TODO: Make this more specific and secure
 app.use(cors({
   // set multiple origins
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'https://journey-with-quran.netlify.app', 'https://journeywithquran.vercel.app'],
-  credentials: true // ✅ Allow sending cookies
+  origin: [
+            'http://localhost:3000', 
+            'http://localhost:5173', 
+            'https://journey-with-quran.netlify.app', 
+            'https://journeywithquran.vercel.app'
+          ],
+  credentials: true // ✅ Allow sending cookies 
 }))
 
 
