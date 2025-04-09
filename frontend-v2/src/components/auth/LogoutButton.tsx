@@ -64,6 +64,9 @@ const LogoutButton = () => {
             toast("logout failed",{
                 description: `Error: ${error}`
             })
+        } finally {
+            // reset loading
+            setLoading(false)
         }
 
     }
