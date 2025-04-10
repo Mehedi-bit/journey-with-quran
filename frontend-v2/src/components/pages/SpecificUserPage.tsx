@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import { Button } from "../ui/button"
 import { useRecoilState } from "recoil"
 import postsAtom from "@/atoms/postsAtom"
+import { serverUrl } from "@/serverUrl"
 
 const SpecificUserPage = () => {
     const [userData, setUserData] = useState(null)
@@ -22,7 +23,7 @@ const SpecificUserPage = () => {
             setError(null)
             try {
                 // Fetch user data
-                const userRes = await fetch(`/api/users/profile/${username}`)
+                const userRes = await fetch(`${serverUrl}/api/users/profile/${username}`)
                 const userData = await userRes.json()
 
                 if (!userRes.ok || userData.error) {
@@ -34,7 +35,7 @@ const SpecificUserPage = () => {
                 setUserData(userData)
 
                 // Fetch user's posts
-                const postsRes = await fetch(`/api/posts/user/${username}`)
+                const postsRes = await fetch(`${serverUrl}/api/posts/user/${username}`)
                 const postsData = await postsRes.json()
 
                 if (!postsRes.ok || postsData.error) {

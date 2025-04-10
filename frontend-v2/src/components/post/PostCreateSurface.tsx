@@ -120,7 +120,7 @@
 
 
 
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -130,6 +130,7 @@ import { BookMarked, Image as ImageIcon, Link, Loader2, Send } from "lucide-reac
 import { toast } from "sonner";
 import { useRecoilState } from "recoil";
 import postsAtom from "@/atoms/postsAtom";
+import { serverUrl } from "@/serverUrl";
 interface PostCreatorProps {
   currentUserInfo: any;
 }
@@ -158,17 +159,18 @@ const PostCreateSurface = ({
     try {
 
       // server actions
-      const res = await fetch('/api/posts/create', {
+      const res = await fetch(`${serverUrl}/api/posts/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
+        credentials: 'include', // ✅ SEND COOKIE
         body: JSON.stringify({
           postedBy: currentUserInfo._id,
           text: content,
           extra: extraContentForPhoto,
           img: ""
-        })
+        }),
       })
 
 
@@ -207,7 +209,7 @@ const PostCreateSurface = ({
     <Card className="w-full p-4 bg-card mb-3">
       <div className="flex items-start gap-4">
         <Avatar className="h-10 w-10">
-          <AvatarImage className="object-cover" src={currentUserInfo.profilePic} alt={currentUserInfo.username} />
+          <AvatarImage className="object-cover" src={currentUserInfo?.profilePic} alt={currentUserInfo.username} />
           <AvatarFallback>You</AvatarFallback>
         </Avatar>
 

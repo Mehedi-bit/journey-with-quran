@@ -25,22 +25,24 @@ app.use(cookieParser())  // For reach and access the cookies
 
 // Enable CORS for all requests
 // @TODO: Make this more specific and secure
-// app.use(cors({
-//   // set multiple origins
-//   origin: [
-//             'http://localhost:3000', 
-//             'http://localhost:5173', 
-//             'https://journey-with-quran.netlify.app', 
-//             'https://journeywithquran.vercel.app',
-//             "https://journeywithquran.pages.dev",
-//           ],
-//   credentials: true // ✅ Allow sending cookies 
-// }))
-
 app.use(cors({
-  origin: '*', // Allow all origins
-  credentials: true // ✅ Allow sending cookies
+  // set multiple origins
+  origin: [
+            'http://localhost:3000', 
+            'http://localhost:5173', 
+            'http://localhost:5000',
+            'https://journey-with-quran.netlify.app', 
+            'https://journeywithquran.netlify.app', 
+            'https://journeywithquran.vercel.app',
+            "https://journeywithquran.pages.dev",
+          ],
+  credentials: true // ✅ Allow sending cookies 
 }))
+
+// app.use(cors({
+//   origin: '*', // Allow all origins
+//   credentials: true // ✅ Allow sending cookies
+// }))
 
 
 // Cloudinary configuration

@@ -9,6 +9,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { serverUrl } from "@/serverUrl"
 import { EllipsisVertical } from "lucide-react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import { toast } from "sonner"
@@ -38,7 +39,7 @@ export function PostDropDownMenu({post}) {
 
       try {
         // server actions
-        const res = await fetch(`/api/posts/${post._id}`, {
+        const res = await fetch(`${serverUrl}/api/posts/${post._id}`, {
           method: "DELETE"
         })
 

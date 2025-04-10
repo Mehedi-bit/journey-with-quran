@@ -1,4 +1,4 @@
-
-
-// export const serverUrl = "https://journey-with-quran-api.onrender.com"
-export const serverUrl = "http://localhost:5000"
+export const serverUrl =
+  import.meta.env.MODE === 'development'
+    ? '' // use Vite proxy
+    : 'https://journey-with-quran-api.onrender.com';

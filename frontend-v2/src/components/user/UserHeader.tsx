@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "../ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
+import { serverUrl } from "@/serverUrl";
 
 
 // interface
@@ -50,7 +51,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({userData}) => {  // user that we
 
 
             // server actions
-            const res = await fetch(`/api/users/follow/${userData._id}`, {
+            const res = await fetch(`${serverUrl}/api/users/follow/${userData._id}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

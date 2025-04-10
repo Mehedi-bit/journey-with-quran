@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { set } from "react-hook-form"
 import { LoaderCircle } from "lucide-react"
 import postsAtom from "@/atoms/postsAtom"
+import { serverUrl } from "@/serverUrl"
 
 
 
@@ -63,7 +64,7 @@ const CommentsCard = ({post, userData}) => {
     try {
       
       // server actions
-      const res = await fetch(`/api/posts/reply/${post._id}`, {
+      const res = await fetch(`${serverUrl}/api/posts/reply/${post._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"

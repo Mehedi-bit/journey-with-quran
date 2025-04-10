@@ -18,6 +18,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { userAtom } from "@/atoms/userAtom";
 import postsAtom from "@/atoms/postsAtom";
 import  {PostDropDownMenu}  from "./PostDropdownMenu";
+import { serverUrl } from "@/serverUrl";
 
 
 
@@ -81,8 +82,9 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
         try {
 
             // server actions
-            const res = await fetch(`/api/posts/like/${post._id}`, {
+            const res = await fetch(`${serverUrl}/api/posts/like/${post._id}`, {
                 method: "PUT",
+                credentials: 'include', // ✅ SEND COOKIE
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -126,7 +128,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
 
         } catch (error) {
-            toast(`${error}`)
+            toast(`Written ${error}`)
         } finally {
             setLiking(false)
         }

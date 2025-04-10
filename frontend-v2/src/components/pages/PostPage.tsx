@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { useRecoilState, useRecoilValue } from "recoil";
 import postsAtom from "@/atoms/postsAtom";
 import { userAtom } from "@/atoms/userAtom";
+import { serverUrl } from "@/serverUrl";
 
 
 // shuffle and get a random image from these images
@@ -64,11 +65,13 @@ const PostPage = () => {
         try {
 
             // server actions
-            const res = await fetch(`/api/posts/like/${currentPost?._id}`, {
+            const res = await fetch(`${serverUrl}/api/posts/like/${currentPost?._id}`, {
                 method: "PUT",
+                credentials: 'include', // ✅ SEND COOKIE
                 headers: {
                     "Content-Type": "application/json"
                 },
+                
             })
 
             const data = await res.json();
@@ -133,7 +136,7 @@ const PostPage = () => {
 
             try {
                 // server actions
-            const res = await fetch(`/api/posts/${pid}`, {
+            const res = await fetch(`${serverUrl}/api/posts/${pid}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -193,7 +196,7 @@ const PostPage = () => {
 
             try {
                 // server actions
-                const res = await fetch(`/api/users/profile/${postedBy._id}`, {
+                const res = await fetch(`${serverUrl}/api/users/profile/${postedBy._id}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

@@ -178,7 +178,7 @@ import { serverUrl } from "@/serverUrl"
         console.log("this is userinfo", userInfo)
 
         // server actions
-        const res = await fetch(`/api/users/update/${userInfo._id}`, {
+        const res = await fetch(`${serverUrl}/api/users/update/${userInfo._id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
