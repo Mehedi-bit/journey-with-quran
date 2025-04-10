@@ -69,9 +69,9 @@ const TafsirPage = () => {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="lg:hidden flex-none"
+                  className="rounded-full lg:hidden flex-none"
                 >
-                  <Menu className="h-5 w-5" />
+                  <ChevronRight className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] p-0">
