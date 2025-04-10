@@ -42,6 +42,7 @@ export function LoginCard({
         // server actions
         const res = await fetch(`${serverUrl}/api/users/login`, {
           method: "POST",
+          credentials: "include", // ✅ SEND COOKIE
           headers: {
             "Content-Type": "application/json",
           },
@@ -93,6 +94,9 @@ export function LoginCard({
           description: `Error: ${error}`
         })
         
+      } finally {
+        // reset loading
+        setLoading(false)
       }
 
       

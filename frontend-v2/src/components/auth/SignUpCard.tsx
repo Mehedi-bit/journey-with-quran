@@ -53,6 +53,7 @@ export function SignUpCard({
       // server actions
       const res = await fetch(`${serverUrl}/api/users/signup`, {
         method: "POST",
+        credentials: "include", // ✅ SEND COOKIE
         headers: {
           "Content-Type": "application/json",
         },
