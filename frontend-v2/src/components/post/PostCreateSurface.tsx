@@ -131,6 +131,7 @@ import { toast } from "sonner";
 import { useRecoilState } from "recoil";
 import postsAtom from "@/atoms/postsAtom";
 import { serverUrl } from "@/serverUrl";
+import { useNavigate } from "react-router-dom";
 interface PostCreatorProps {
   currentUserInfo: any;
 }
@@ -143,6 +144,8 @@ const PostCreateSurface = ({
   const [activeTab, setActiveTab] = useState("write");
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useRecoilState(postsAtom)
+
+  const navigate = useNavigate()
 
 
 
@@ -208,7 +211,11 @@ const PostCreateSurface = ({
   return (
     <Card className="w-full p-4 bg-card mb-3">
       <div className="flex items-start gap-4">
-        <Avatar className="h-10 w-10">
+        
+        <Avatar className="h-10 w-10" onClick={ (e)=> {
+                        e.preventDefault();
+                        navigate(`/${currentUserInfo?.username}`)
+                    } }>
           <AvatarImage className="object-cover" src={currentUserInfo?.profilePic} alt={currentUserInfo.username} />
           <AvatarFallback>You</AvatarFallback>
         </Avatar>
