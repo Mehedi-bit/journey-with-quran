@@ -128,6 +128,19 @@ import { serverUrl } from "@/serverUrl"
     "https://ik.imagekit.io/mehedi004/Avatars/Sen%20g%C3%BCzellikle%20s%C3%B6z%C3%BCn%C3%BC%20s%C3%B6ylersin_%20Arif%20olan%20ders_.jpeg?updatedAt=1744301776125",
     "https://ik.imagekit.io/mehedi004/Avatars/Image%20of%20the%20day.jpeg?updatedAt=1744301774956",
     "https://ik.imagekit.io/mehedi004/Avatars/Meryem%20Best%20Wallpaper%20_%20(Islamic%20Calligraphy).jpeg?updatedAt=1744301775520",
+    
+    "https://ik.imagekit.io/mehedi004/Avatars/00a0a07b-1fb6-4dc0-8023-aaa5afb4f6f6.jpeg?updatedAt=1744303617925",
+    "https://ik.imagekit.io/mehedi004/Avatars/Tawaqal%20On%20Allah.jpeg?updatedAt=1744303615876",
+    "https://ik.imagekit.io/mehedi004/Avatars/db22ba11-492a-445e-b5f4-17805db7c030.jpeg?updatedAt=1744303612894",
+    "https://ik.imagekit.io/mehedi004/Avatars/db22ba11-492a-445e-b5f4-17805db7c030.jpeg?updatedAt=1744303612894",
+    "https://ik.imagekit.io/mehedi004/Avatars/sound,islamic%20sleep%20music,islamic%20meditation,islamic%20background,islamic.jpeg?updatedAt=1744303610654",
+    "https://ik.imagekit.io/mehedi004/Avatars/7cb9eec9-5ea9-44cd-9664-b794a1a10ebd.jpeg?updatedAt=1744303610627",
+    "https://ik.imagekit.io/mehedi004/Avatars/bb51472c-0089-40c9-a18e-02d1cec0d7c0.jpeg?updatedAt=1744303607928",
+    "https://ik.imagekit.io/mehedi004/Avatars/_Sabr%20%D8%B5%D8%A8%D8%B1%20Arabic%20Islamic%20calligraphy%20_%20Canvas%20Print%20for%20Sale%20by%20ZamZamDesign.jpeg?updatedAt=1744303607807",
+    "https://ik.imagekit.io/mehedi004/Avatars/5976d961-abbd-436c-bc7c-b8229670e306.jpeg?updatedAt=1744303605324",
+    "https://ik.imagekit.io/mehedi004/Avatars/download%20(24).jpeg?updatedAt=1744303614515",
+  
+
   ];
   
 
