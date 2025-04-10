@@ -40,7 +40,8 @@ export function PostDropDownMenu({post}) {
       try {
         // server actions
         const res = await fetch(`${serverUrl}/api/posts/${post._id}`, {
-          method: "DELETE"
+          method: "DELETE",
+          credentials: 'include', // ✅ SEND COOKIE
         })
 
         const data = await res.json()
