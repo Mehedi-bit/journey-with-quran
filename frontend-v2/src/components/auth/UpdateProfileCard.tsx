@@ -132,7 +132,6 @@ import { serverUrl } from "@/serverUrl"
     "https://ik.imagekit.io/mehedi004/Avatars/00a0a07b-1fb6-4dc0-8023-aaa5afb4f6f6.jpeg?updatedAt=1744303617925",
     "https://ik.imagekit.io/mehedi004/Avatars/Tawaqal%20On%20Allah.jpeg?updatedAt=1744303615876",
     "https://ik.imagekit.io/mehedi004/Avatars/db22ba11-492a-445e-b5f4-17805db7c030.jpeg?updatedAt=1744303612894",
-    "https://ik.imagekit.io/mehedi004/Avatars/db22ba11-492a-445e-b5f4-17805db7c030.jpeg?updatedAt=1744303612894",
     "https://ik.imagekit.io/mehedi004/Avatars/sound,islamic%20sleep%20music,islamic%20meditation,islamic%20background,islamic.jpeg?updatedAt=1744303610654",
     "https://ik.imagekit.io/mehedi004/Avatars/7cb9eec9-5ea9-44cd-9664-b794a1a10ebd.jpeg?updatedAt=1744303610627",
     "https://ik.imagekit.io/mehedi004/Avatars/bb51472c-0089-40c9-a18e-02d1cec0d7c0.jpeg?updatedAt=1744303607928",
