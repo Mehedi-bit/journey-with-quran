@@ -35,6 +35,7 @@ app.use(cors({
             'https://journeywithquran.netlify.app', 
             'https://journeywithquran.vercel.app',
             "https://journeywithquran.pages.dev",
+            "https://journey-with-quran.vercel.app"
           ],
   credentials: true // ✅ Allow sending cookies 
 }))
