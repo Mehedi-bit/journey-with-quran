@@ -53,6 +53,7 @@ const UserHeader: React.FC<UserHeaderProps> = ({userData}) => {  // user that we
             // server actions
             const res = await fetch(`${serverUrl}/api/users/follow/${userData._id}`, {
                     method: "POST",
+                    credentials: "include", // ✅ SEND COOKIE
                     headers: {
                         "Content-Type": "application/json",
                     }
