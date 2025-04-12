@@ -112,8 +112,8 @@ const Navbar = ({
       url: "#",
       items: [
         {
-          title: "Articles",
-          description: "Read insightful articles on Quranic studies",
+          title: "Asma ul Husna",
+          description: "Learn and Live by Allah’s beautiful names, and get into Jannah",
           icon: <Zap className="size-5 shrink-0" />,
           url: "#",
         },
@@ -131,13 +131,13 @@ const Navbar = ({
         },
       ],
     },
-    {
-      title: "Blog",
-      url: "#",
-    },
+    // {
+    //   title: "Blog",
+    //   url: "#",
+    // },
     {
       title: "Contact",
-      url: "#",
+      url: "contact",
     },
     ],
   
@@ -146,12 +146,14 @@ const Navbar = ({
 
 
 
-  mobileExtraLinks = [
-    { name: "Press", url: "#" },
-    { name: "Contact", url: "#" },
-    { name: "Imprint", url: "#" },
-    { name: "Sitemap", url: "#" },
-  ],
+  // mobileExtraLinks = [
+  //   { name: "Press", url: "#" },
+  //   { name: "Contact", url: "#" },
+  //   { name: "Imprint", url: "#" },
+  //   { name: "Sitemap", url: "#" },
+  // ],
+
+
   auth = {
     login: { text: "Log in", url: "#" },
     signup: { text: "Sign up", url: "#" },
