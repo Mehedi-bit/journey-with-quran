@@ -66,6 +66,7 @@ const CommentsCard = ({post, userData}) => {
       // server actions
       const res = await fetch(`${serverUrl}/api/posts/reply/${post._id}`, {
         method: "PUT",
+        credentials: 'include', // ✅ SEND COOKIE
         headers: {
           "Content-Type": "application/json"
         },
