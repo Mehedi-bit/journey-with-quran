@@ -78,7 +78,7 @@ const SurahView = ({ surahNumber, translation }: SurahViewProps) => {
             <span className="font-mono text-sm text-muted-foreground">
               {verse.number}
             </span>
-            <p className="arabic-text-3xl text-right w-full" dir="rtl">
+            <p className="text-xl text-right w-full" dir="rtl" style={{ fontFamily: "Amiri, serif", wordSpacing: '3px' }}>
               {verse.text}
             </p>
           </div>
