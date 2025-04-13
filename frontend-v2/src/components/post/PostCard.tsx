@@ -71,7 +71,11 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
     const handleLike = async () => {
 
-        if (!currentUser) return toast("Login first")
+        if (!currentUser) {
+            toast("Please login to like this post")
+            navigate("/auth")
+            return;
+        }
 
         if (liking) return; // if already loading, return
 

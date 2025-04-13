@@ -15,7 +15,7 @@ import CommentsCard from "../post/CommentsCard";
 import ayahBgPic from "../../assets/ayah_bg.png";
 import ayahBgPic3 from "../../assets/ayah_bg3.jpg";
 import ayahBgPic4 from "../../assets/ayah_bg4.jpg";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useRecoilState, useRecoilValue } from "recoil";
 import postsAtom from "@/atoms/postsAtom";
@@ -47,6 +47,7 @@ const PostPage = () => {
     const [liked, setLiked] = useState(currentPost?.likes.includes(currentUser?._id));
     const [liking, setLiking] = useState(false);
     
+    const navigate = useNavigate()
 
     //   get postID from url
     const { pid } = useParams<{ pid: string }>();
@@ -54,7 +55,11 @@ const PostPage = () => {
 
     const handleLike = async () => {
 
-        if (!currentUser) return toast("Login first")
+        if (!currentUser) {
+            toast('Please login to like this post')
+            navigate('/auth')
+            return;
+        }
 
         if (liking) return; // if already loading, return
 
