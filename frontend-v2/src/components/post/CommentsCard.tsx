@@ -138,7 +138,7 @@ const CommentsCard = ({post, userData}) => {
           {/* current user */}
           <Avatar>
             <AvatarImage className="object-cover" src={currentUserInfo?.profilePic} alt="User" />
-            <AvatarFallback>JQ</AvatarFallback>
+            <AvatarFallback>🤍</AvatarFallback>
           </Avatar>
 
           <form className="flex flex-col w-full gap-4" onSubmit={handleCommentSubmit}>

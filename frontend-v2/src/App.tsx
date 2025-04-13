@@ -39,7 +39,8 @@ function App() {
             {/* MAIN PAGE CONTENTS */}  
             <Routes>
 
-                <Route path="/" element={userInfo? <Home /> : <Navigate to={"/auth"} /> } />
+                {/* <Route path="/" element={userInfo? <Home /> : <Navigate to={"/auth"} /> } /> */}
+                <Route path="/" element={<Home />} />
                 <Route path="/auth" element={!userInfo ? <AuthPage /> : <Navigate to={"/"} /> } />
                 <Route path="/:username" element={<SpecificUserPage />} />
                 <Route path="/:username/post/:pid" element={<PostPage />} />

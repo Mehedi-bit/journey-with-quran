@@ -150,6 +150,13 @@ const PostCreateSurface = ({
 
 
   const handleCreatePost = async () => {
+
+    // if user not logged in navigate to auth page
+    if (!currentUserInfo) {
+      toast("Please login to create a post")
+      navigate("/auth")
+      return;
+    }
     
     setLoading(true);
 
@@ -212,12 +219,16 @@ const PostCreateSurface = ({
     <Card className="w-full p-4 bg-card mb-3">
       <div className="flex items-start gap-4">
         
-        <Avatar className="h-10 w-10 cursor-pointer" onClick={ (e)=> {
-                        e.preventDefault();
-                        navigate(`/${currentUserInfo?.username}`)
-                    } }>
-          <AvatarImage className="object-cover" src={currentUserInfo?.profilePic} alt={currentUserInfo.username} />
-          <AvatarFallback>You</AvatarFallback>
+        <Avatar className="h-10 w-10 cursor-pointer" onClick={(e) => {
+            e.preventDefault();
+            if (!currentUserInfo) {
+              navigate("/auth");
+            } else {
+              navigate(`/${currentUserInfo?.username}`);
+            }
+              }}>
+          <AvatarImage className="object-cover" src={currentUserInfo?.profilePic} alt={"Y"} />
+          <AvatarFallback>🤍</AvatarFallback>
         </Avatar>
 
         <div className="flex-1">
