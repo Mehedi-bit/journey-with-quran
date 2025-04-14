@@ -279,7 +279,7 @@ const PostCreateSurface = ({
                 value={content}
                 onChange={(e) => {
                   const newValue = e.target.value;
-                  if (!currentUserInfo && newValue.length > 15) return setContent("Please login to post..."); // Block typing after 15 chars
+                  if (!currentUserInfo && newValue.length > 15) return setContent("Please login first to post..."); // Block typing after 15 chars
                   setContent(newValue);
                 }}
                 className="min-h-[120px] mb-4 bg-background"
