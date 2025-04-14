@@ -120,7 +120,7 @@
 
 
 
-import  { useState } from "react";
+import  { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -144,8 +144,35 @@ const PostCreateSurface = ({
   const [activeTab, setActiveTab] = useState("write");
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useRecoilState(postsAtom)
+  const [showLoginWarning, setShowLoginWarning] = useState(false);
+  const [dotCount, setDotCount] = useState(0);
 
   const navigate = useNavigate()
+
+
+
+
+
+
+  useEffect(() => {
+    if (content.length > 15 && !currentUserInfo) {
+      setShowLoginWarning(true);
+    } else {
+      setShowLoginWarning(false);
+    }
+  }, [content, currentUserInfo]);
+
+
+
+
+  useEffect(() => {
+    if (showLoginWarning) {
+      const interval = setInterval(() => {
+        setDotCount((prev) => (prev + 1) % 4); // cycles between 0 to 3
+      }, 200); // update every 0.1s
+      return () => clearInterval(interval);
+    }
+  }, [showLoginWarning]);
 
 
 
@@ -244,6 +271,8 @@ const PostCreateSurface = ({
               <TabsTrigger value="verse">Verse</TabsTrigger>
             </TabsList>
 
+
+
             <TabsContent value="write">
               <Textarea
                 placeholder="Share your Quran learning journey..."
@@ -252,6 +281,13 @@ const PostCreateSurface = ({
                 className="min-h-[120px] mb-4 bg-background"
               />
             </TabsContent>
+
+
+            {showLoginWarning && (
+                  <p className="text-sm font-semibold mb-4">Please log in{".".repeat(dotCount)}</p>
+            )}
+
+
 
             {/* it was for showing post preview */}
             {/* <TabsContent value="preview">
