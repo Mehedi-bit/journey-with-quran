@@ -126,7 +126,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BookMarked, Image as ImageIcon, Link, Loader2, Send } from "lucide-react";
+import { BookMarked, Image as ImageIcon, Link, Loader2, UserRoundSearch, Send } from "lucide-react";
 import { toast } from "sonner";
 import { useRecoilState } from "recoil";
 import postsAtom from "@/atoms/postsAtom";
@@ -155,7 +155,7 @@ const PostCreateSurface = ({
 
 
   useEffect(() => {
-    if (content.length > 15 && !currentUserInfo) {
+    if (content.length > 0 && !currentUserInfo) {
       setShowLoginWarning(true);
     } else {
       setShowLoginWarning(false);
@@ -169,7 +169,7 @@ const PostCreateSurface = ({
     if (showLoginWarning) {
       const interval = setInterval(() => {
         setDotCount((prev) => (prev + 1) % 4); // cycles between 0 to 3
-      }, 200); // update every 0.1s
+      }, 300); // update every 0.1s
       return () => clearInterval(interval);
     }
   }, [showLoginWarning]);
@@ -255,7 +255,7 @@ const PostCreateSurface = ({
             }
               }}>
           <AvatarImage className="object-cover" src={currentUserInfo?.profilePic} alt={"Y"} />
-          <AvatarFallback>🤍</AvatarFallback>
+          <AvatarFallback><UserRoundSearch/></AvatarFallback>
         </Avatar>
 
         <div className="flex-1">
@@ -277,14 +277,18 @@ const PostCreateSurface = ({
               <Textarea
                 placeholder="Share your Quran learning journey..."
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  if (!currentUserInfo && newValue.length > 15) return setContent("Please login to post..."); // Block typing after 15 chars
+                  setContent(newValue);
+                }}
                 className="min-h-[120px] mb-4 bg-background"
               />
             </TabsContent>
 
 
             {showLoginWarning && (
-                  <p className="text-sm font-semibold mb-4">Please log in{".".repeat(dotCount)}</p>
+                  <p className="text-sm font-semibold mb-4">Login please{".".repeat(dotCount)}</p>
             )}
 
 
