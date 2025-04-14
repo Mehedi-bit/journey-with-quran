@@ -288,7 +288,15 @@ const PostCreateSurface = ({
 
 
             {showLoginWarning && (
-                  <p className="text-sm font-semibold mb-4">Login please{".".repeat(dotCount)}</p>
+
+                <p className="text-sm font-semibold mb-4 cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/auth");
+                    }}
+                >
+                Login please{".".repeat(dotCount)}</p>
+              
             )}
 
 

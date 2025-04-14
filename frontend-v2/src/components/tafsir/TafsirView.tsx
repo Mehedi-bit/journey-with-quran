@@ -92,7 +92,7 @@ const TafsirView = ({ surahNumber, translation }) => {
             <div
               className={
                 translation === "bn"
-                  ? "font-bangla text-sm text-justify leading-relaxed space-y-3"
+                  ? "font-bangla text-lg text-justify leading-relaxed space-y-3"
                   : "text-sm text-justify leading-relaxed space-y-3"
               }
             >
