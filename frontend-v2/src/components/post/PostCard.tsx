@@ -143,8 +143,63 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
     }
 
 
-    
-  
+
+
+
+    // function to style and format the text
+
+    function formatPostText(text: string): JSX.Element[] {
+        const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|#[^\s]+|https?:\/\/[^\s]+)/g);
+      
+        return parts.map((part: string, index: number) => {
+          // **double-star** → bold + text-lg
+          if (part.startsWith("**") && part.endsWith("**")) {
+            return (
+              <strong key={index} className="font-bold text-white text-lg">
+                {part.slice(2, -2)}
+              </strong>
+            );
+          }
+      
+          // *single-star* → bold
+          if (part.startsWith("*") && part.endsWith("*")) {
+            return (
+              <strong key={index} className="font-bold text-white">
+                {part.slice(1, -1)}
+              </strong>
+            );
+          }
+      
+          // #hashtag → blue
+          if (part.startsWith("#")) {
+            return (
+              <span key={index} className="text-blue-400">
+                {part}
+              </span>
+            );
+          }
+      
+          // https://link → blue and clickable
+          if (part.startsWith("http://") || part.startsWith("https://")) {
+            return (
+              <a
+                key={index}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline"
+              >
+                {part}
+              </a>
+            );
+          }
+      
+          // Default/plain text
+          return <span key={index}>{part}</span>;
+        });
+    }
+      
+      
 
 
 
@@ -191,7 +246,11 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
                     <CardContent>
                         <pre className="bangla-text whitespace-pre-wrap text-neutral-200">
                             
-                            {post.text}
+                            {
+                                formatPostText(
+                                    post.text
+                                )
+                            }
 
                         </pre>
                     </CardContent>
