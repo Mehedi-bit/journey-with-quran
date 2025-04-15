@@ -422,7 +422,9 @@ const PostPage = () => {
  
                   <div className="flex flex-row gap-1 items-center"
                   >
-                        <MessageCircle size={20} />
+                        <a href="#comment-box">
+                            <MessageCircle size={20} />
+                        </a>
                         <span className="text-sm text-gray-100">
                                 {currentPost?.replies.length}
                         </span>
@@ -439,7 +441,7 @@ const PostPage = () => {
 
               {/* COMMENTS HERE */}
 
-                <div ref={commentRef}>
+                <div ref={commentRef} id="comment-box">
                     <CommentsCard post={currentPost} userData={userData} />
                 </div>
 
