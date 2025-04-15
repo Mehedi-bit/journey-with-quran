@@ -343,11 +343,6 @@ const PostPage = () => {
     if (!currentPost || !userData) return null;
 
 
-
-
-    
-
-
   return (
 
       <div className="px-4 md:px-[20%]">
@@ -426,7 +421,6 @@ const PostPage = () => {
                   </div>
  
                   <div className="flex flex-row gap-1 items-center"
-                      
                   >
                         <MessageCircle size={20} />
                         <span className="text-sm text-gray-100">
