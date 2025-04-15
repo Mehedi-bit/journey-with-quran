@@ -8,14 +8,14 @@ import {
 } from "@/components/ui/card"
 import { Heart, Share2, MessageCircle, LoaderIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { use, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PostDropDownMenu } from "../post/PostDropdownMenu";
 import CommentsCard from "../post/CommentsCard";
 
 import ayahBgPic from "../../assets/ayah_bg.png";
 import ayahBgPic3 from "../../assets/ayah_bg3.jpg";
 import ayahBgPic4 from "../../assets/ayah_bg4.jpg";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useRecoilState, useRecoilValue } from "recoil";
 import postsAtom from "@/atoms/postsAtom";
@@ -33,6 +33,9 @@ const randomBgPic = bgPics[Math.floor(Math.random() * bgPics.length)];
 
 const PostPage = () => {
 
+
+    const location = useLocation();
+    const commentRef = useRef(null);
 
     
     
@@ -129,7 +132,7 @@ const PostPage = () => {
 
 
     
-
+    // fetch post by postID
     useEffect(() => {
 
 
@@ -192,6 +195,8 @@ const PostPage = () => {
 
     
     console.log("postedBy from postPage", postedBy)
+
+    // get the user data of the user who posted this post
 
     useEffect(()=>{
 
@@ -300,11 +305,22 @@ const PostPage = () => {
           return <span key={index}>{part}</span>;
         });
     }
-      
+    
 
 
-
-
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const shouldScroll = params.get("scrollToComments") === "true";
+    
+        // only scroll when post is loaded
+        if (shouldScroll && commentRef.current && currentPost) {
+          // delay scroll just a bit to ensure DOM is rendered
+          setTimeout(() => {
+            commentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100); // 100ms should be enough
+        }
+    }, [location, currentPost]);
+    
 
 
 
@@ -318,7 +334,6 @@ const PostPage = () => {
     }
 
     if (!currentPost || !userData) return null;
-
 
 
 
@@ -403,11 +418,13 @@ const PostPage = () => {
                       </span>
                   </div>
  
-                  <div className="flex flex-row gap-1 items-center">
-                      <MessageCircle size={20} />
-                      <span className="text-sm text-gray-100">
-                            {currentPost?.replies.length}
-                      </span>
+                  <div className="flex flex-row gap-1 items-center"
+                      
+                  >
+                        <MessageCircle size={20} />
+                        <span className="text-sm text-gray-100">
+                                {currentPost?.replies.length}
+                        </span>
                   </div>
 
                   <div>
@@ -421,7 +438,9 @@ const PostPage = () => {
 
               {/* COMMENTS HERE */}
 
-              <CommentsCard post={currentPost} userData={userData} />
+                <div ref={commentRef}>
+                    <CommentsCard post={currentPost} userData={userData} />
+                </div>
 
               
 

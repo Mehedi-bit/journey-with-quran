@@ -8,7 +8,7 @@ import {
   } from "@/components/ui/card"
 import { Heart, Share2, MessageCircle } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
@@ -198,9 +198,14 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
           return <span key={index}>{part}</span>;
         });
     }
-      
-      
 
+
+
+    // handle comment click navigation to the post page
+
+    const handleCommentClickNavigation = () => {
+        navigate(`/${post.postedBy.username}/post/${post._id}?scrollToComments=true`);
+    };
 
 
 
@@ -301,16 +306,16 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
 
                     
-                    <Link to={`/${post.postedBy.username}/post/${post._id}`} className="cursor-pointer">
-                        <div className="flex flex-row gap-1 items-center">
-                            
-                                <MessageCircle size={20} />
-                                <span className="text-sm text-gray-100">
-                                    {post.replies.length}
-                                </span>
-                            
-                        </div>
-                    </Link>
+                    <div className="flex flex-row gap-1 items-center cursor-pointer" 
+                        onClick={handleCommentClickNavigation}
+                    >
+                        
+                            <MessageCircle size={20} />
+                            <span className="text-sm text-gray-100">
+                                {post.replies.length}
+                            </span>
+                        
+                    </div>
 
 
                     <div>
