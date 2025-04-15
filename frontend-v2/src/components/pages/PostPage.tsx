@@ -312,14 +312,21 @@ const PostPage = () => {
         const params = new URLSearchParams(location.search);
         const shouldScroll = params.get("scrollToComments") === "true";
     
-        // only scroll when post is loaded
-        if (shouldScroll && commentRef.current && currentPost) {
-          // delay scroll just a bit to ensure DOM is rendered
-          setTimeout(() => {
-            commentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 100); // 100ms should be enough
+        // Only try scrolling when currentPost has loaded
+        if (shouldScroll && currentPost) {
+          const interval = setInterval(() => {
+            if (commentRef.current) {
+              commentRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+              clearInterval(interval); // Stop checking once done
+            }
+          }, 100); // Try every 100ms until commentRef is available
+    
+          return () => clearInterval(interval); // Cleanup
         }
-    }, [location, currentPost]);
+    }, [location.search, currentPost]); // Run when currentPost is ready
     
 
 
