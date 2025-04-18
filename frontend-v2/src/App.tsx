@@ -13,6 +13,7 @@ import SurahPage from "./components/pages/SurahPage"
 import TafsirPage from "./components/pages/TafsirPage"
 import Contact from "./components/common/Contact"
 import PopUp from "./components/common/PopUp"
+import HadithPage from "./components/pages/HadithPage"
 
 
 
@@ -51,7 +52,7 @@ function App() {
 
                 <Route path="/surahs" element={<SurahPage />} />
                 <Route path="/tafsir" element={<TafsirPage />} />
-                <Route path="/hadith" element={<ComingSoon />} />
+                <Route path="/hadith" element={<HadithPage />} />
 
 
                 <Route path="/contact" element={<Contact />} />
