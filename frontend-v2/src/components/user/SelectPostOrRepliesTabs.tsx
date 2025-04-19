@@ -11,7 +11,7 @@ const SelectPostOrRepliesTabs = () => {
         <TabsTrigger value="replies" className="w-full">Replies</TabsTrigger>
       </TabsList>
       <TabsContent value="posts">Here are the posts</TabsContent>
-      <TabsContent value="replies">Here are the replies</TabsContent>
+      <TabsContent value="replies">You'll find replies under specific posts</TabsContent>
     </Tabs>
 
 
