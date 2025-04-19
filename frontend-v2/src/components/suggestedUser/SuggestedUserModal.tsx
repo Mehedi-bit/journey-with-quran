@@ -29,7 +29,7 @@ interface SuggestedUser {
   bio: string;
 }
 
-const fallbackAvatar = "https://ik.imagekit.io/mehedi004/Avatars/default2?updatedAt=1745075903036";
+const fallbackAvatar = "https://ik.imagekit.io/mehedi004/Avatars/default3.jpg?updatedAt=1745079116757";
 
 const SuggestedUsersModal = ({ isOpen, onClose }: SuggestedUsersModalProps) => {
   const navigate = useNavigate();
