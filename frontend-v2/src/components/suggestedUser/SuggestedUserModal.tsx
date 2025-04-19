@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Dialog,
@@ -9,110 +9,135 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-
-// Local mock data for suggested users
-const mockSuggestedUsers = [
-  {
-    id: "4",
-    name: "Zainab Ali",
-    username: "zainab_ali",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Zainab",
-    bio: "Quran memorization specialist",
-    isFollowing: false,
-  },
-  {
-    id: "5",
-    name: "Yusuf Khan",
-    username: "yusuf_khan",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Yusuf",
-    bio: "Tajweed instructor with 10 years experience",
-    isFollowing: true,
-  },
-  {
-    id: "6",
-    name: "Aisha Rahman",
-    username: "aisha_rahman",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aisha",
-    bio: "Arabic language teacher and Quran enthusiast",
-    isFollowing: false,
-  },
-  {
-    id: "7",
-    name: "Ibrahim Malik",
-    username: "ibrahim_malik",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ibrahim",
-    bio: "Hafiz and Islamic studies researcher",
-    isFollowing: false,
-  },
-  {
-    id: "8",
-    name: "Maryam Siddiqui",
-    username: "maryam_siddiqui",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Maryam",
-    bio: "Quran translation specialist and author",
-    isFollowing: true,
-  },
-  {
-    id: "9",
-    name: "Hamza Ahmed",
-    username: "hamza_ahmed",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Hamza",
-    bio: "Quran recitation coach and competition judge",
-    isFollowing: false,
-  },
-  {
-    id: "10",
-    name: "Khadija Omar",
-    username: "khadija_omar",
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Khadija",
-    bio: "Islamic calligraphy artist and Quran teacher",
-    isFollowing: false,
-  },
-];
+import { Skeleton } from "@/components/ui/skeleton";
+import { serverUrl } from "@/serverUrl";
+import { toast } from "sonner";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "@/atoms/userAtom";
+import { LoaderCircle } from "lucide-react"; // Spinner icon
 
 interface SuggestedUsersModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface SuggestedUser {
+  _id: string;
+  name: string;
+  username: string;
+  profilePic: string;
+  bio: string;
+}
+
+const fallbackAvatar = "https://ik.imagekit.io/mehedi004/Avatars/default2?updatedAt=1745075903036";
+
 const SuggestedUsersModal = ({ isOpen, onClose }: SuggestedUsersModalProps) => {
   const navigate = useNavigate();
-  const [suggestedUsers, setSuggestedUsers] = React.useState<SuggestedUser[]>(
-    [],
-  );
-  const [followingStatus, setFollowingStatus] = React.useState<
-    Record<string, boolean>
-  >({});
+  const currentUserInfo = useRecoilValue(userAtom);
+  const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
+  const [followingStatus, setFollowingStatus] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = useState<Record<string, boolean>>({});
 
-  React.useEffect(() => {
-    // Use local mock data instead of service
-    const users = mockSuggestedUsers;
-    setSuggestedUsers(users.slice(0, 5)); // Limit to 5 users
+  useEffect(() => {
+    if (!isOpen) return;
 
-    // Initialize following status
-    const initialStatus: Record<string, boolean> = {};
-    users.forEach((user) => {
-      initialStatus[user.id] = user.isFollowing;
-    });
-    setFollowingStatus(initialStatus);
+    const fetchSuggestedUsers = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${serverUrl}/api/users/suggested`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+        const topUsers = data.slice(0, 4);
+        setSuggestedUsers(topUsers);
+
+        const initialStatus: Record<string, boolean> = {};
+        const initialLoading: Record<string, boolean> = {};
+        topUsers.forEach((user: SuggestedUser) => {
+          initialStatus[user._id] = false;
+          initialLoading[user._id] = false;
+        });
+        setFollowingStatus(initialStatus);
+        setButtonLoading(initialLoading);
+      } catch (error) {
+        console.error("Error fetching suggested users:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSuggestedUsers();
   }, [isOpen]);
 
-  // Handle follow/unfollow directly in the component
-  const handleFollowToggle = (userId: string) => {
-    // Update the following status locally
+  const handleFollowToggle = async (userId: string) => {
+    if (!currentUserInfo) {
+      toast("You need to login first");
+      return;
+    }
+
+    if (buttonLoading[userId]) return; // Block multiple clicks
+
+    setButtonLoading((prev) => ({ ...prev, [userId]: true }));
+
+    // Optimistic update
     setFollowingStatus((prev) => ({
       ...prev,
       [userId]: !prev[userId],
     }));
 
-    // In a real API implementation, you would make an API call here
-    // Example: api.toggleFollow(userId).then(response => { ... })
+    try {
+      const res = await fetch(`${serverUrl}/api/users/follow/${userId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        toast(data.error);
+        // Revert toggle
+        setFollowingStatus((prev) => ({
+          ...prev,
+          [userId]: !prev[userId],
+        }));
+      } else {
+        toast(data.message || "Action successful");
+      }
+    } catch (error) {
+      console.error(error);
+      toast("Something went wrong. Please try again.");
+      // Revert on error
+      setFollowingStatus((prev) => ({
+        ...prev,
+        [userId]: !prev[userId],
+      }));
+    } finally {
+      setButtonLoading((prev) => ({ ...prev, [userId]: false }));
+    }
   };
 
   const handleSeeMore = () => {
     navigate("/suggested-users");
     onClose();
+  };
+
+  const renderSkeletons = () => {
+    return Array.from({ length: 4 }).map((_, index) => (
+      <div key={index} className="flex items-center justify-between p-3 rounded-lg">
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-10 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32 rounded" />
+            <Skeleton className="h-3 w-48 rounded" />
+          </div>
+        </div>
+        <Skeleton className="h-8 w-20 rounded-md" />
+      </div>
+    ));
   };
 
   return (
@@ -123,43 +148,60 @@ const SuggestedUsersModal = ({ isOpen, onClose }: SuggestedUsersModalProps) => {
             Suggested Users
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Connect with these scholars and learners to enhance your Quranic
-            journey
+            Follow fellow learners sharing their Quran reflections and insights.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 my-4">
-          {suggestedUsers.map((user) => (
-            <div
-              key={user.id}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/30 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
-                  <AvatarImage src={user.avatarUrl} alt={user.name} />
-                  <AvatarFallback>{user.name[0]}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="font-semibold text-card-foreground">
-                    {user.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">{user.bio}</p>
-                </div>
-              </div>
-              <Button
-                variant={followingStatus[user.id] ? "outline" : "default"}
-                size="sm"
-                className={
-                  followingStatus[user.id]
-                    ? "border-primary text-primary hover:bg-primary/10"
-                    : ""
-                }
-                onClick={() => handleFollowToggle(user.id)}
+        <div className="my-4 space-y-4">
+          {loading ? (
+            renderSkeletons()
+          ) : suggestedUsers.length === 0 ? (
+            <p className="text-center text-muted-foreground">No users found.</p>
+          ) : (
+            suggestedUsers.map((user) => (
+              <div
+                key={user._id}
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/30 transition-colors"
               >
-                {followingStatus[user.id] ? "Following" : "Follow"}
-              </Button>
-            </div>
-          ))}
+                <div
+                  className="flex items-center gap-3 cursor-pointer"
+                  onClick={() => navigate(`/${user.username}`)}
+                >
+                  <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
+                    <AvatarImage
+                      src={user.profilePic || fallbackAvatar}
+                      alt={user.name}
+                      className="object-cover"
+                    />
+                    <AvatarFallback>{user.name[0]}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h3 className="font-semibold text-card-foreground">{user.name}</h3>
+                    <p className="text-xs text-muted-foreground">@{user.username}</p>
+                  </div>
+                </div>
+                <Button
+                  variant={followingStatus[user._id] ? "outline" : "default"}
+                  size="sm"
+                  disabled={buttonLoading[user._id]}
+                  className={
+                    followingStatus[user._id]
+                      ? "border-primary text-primary hover:bg-primary/10"
+                      : ""
+                  }
+                  onClick={() => handleFollowToggle(user._id)}
+                >
+                  {buttonLoading[user._id] ? (
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                  ) : followingStatus[user._id] ? (
+                    "Following"
+                  ) : (
+                    "Follow"
+                  )}
+                </Button>
+              </div>
+            ))
+          )}
         </div>
 
         <div className="flex justify-center mt-2">

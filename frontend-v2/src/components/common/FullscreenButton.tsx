@@ -34,7 +34,7 @@ const FullscreenButton = () => {
     //   {isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
     // </button>
 
-    <Maximize onClick={toggleFullscreen} size={20} className="cursor-pointer" />
+    <Maximize onClick={toggleFullscreen} size={20} className="cursor-pointer mr-10" />
 
   );
 };

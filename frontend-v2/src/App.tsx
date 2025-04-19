@@ -14,6 +14,7 @@ import Contact from "./components/common/Contact"
 import HadithPage from "./components/pages/HadithPage"
 import { ThemeProvider } from "next-themes"
 import GuidePage from "./components/pages/GuidePage"
+import SuggestedUsersPage from "./components/pages/SuggestedUsersPage"
 
 
 
@@ -53,6 +54,7 @@ function App() {
                 <Route path="/tafsir" element={<TafsirPage />} />
                 <Route path="/hadith" element={<HadithPage />} />
                 <Route path="/guide" element={<GuidePage />} />
+                <Route path="/suggested-users" element={<SuggestedUsersPage />} />
                 
 
 

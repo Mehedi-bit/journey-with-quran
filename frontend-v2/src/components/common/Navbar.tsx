@@ -192,12 +192,6 @@ const Navbar = ({
 
           <div className="flex gap-10 items-center">
 
-            <SuggestedUserButton />
-
-            <ThemeSwitcher />
-
-            <FullscreenButton />
-
             {
               userInfo && (
               <Link to={`/${userInfo.username}`}>
@@ -205,6 +199,13 @@ const Navbar = ({
               </Link>
               )
             }
+
+            <SuggestedUserButton />
+
+            <ThemeSwitcher />
+
+            <FullscreenButton />
+
 
 
             {
@@ -312,7 +313,7 @@ const Navbar = ({
 
                     {
                       userInfo && (
-                      <Button variant="outline">
+                      <Button >
                         <Link to={`/${userInfo.username}`}>
                           <UserRound size={20} />
                         </Link>

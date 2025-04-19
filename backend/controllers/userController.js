@@ -417,7 +417,7 @@ const getSuggestedUsers = async (req, res) => {
 
         // Filter out users already followed by the current user (and only keep 4)
         const suggestedUsers = users.filter(user => !followingIds.includes(user._id.toString()))
-        .slice(0, 4) // Only keep 4 users
+        .slice(0, 9) // Only keep 19 users
 
 
         // secure sensitive info like passwords of the suggested users
@@ -437,6 +437,25 @@ const getSuggestedUsers = async (req, res) => {
 
 
 
+// get all users
+// Get all users (excluding password)
+const getAllUsers = async (req, res) => {
+    try {
+      const userId = req.user?._id; // Optional: If you want to exclude the current user
+  
+      const users = await User.find({
+        _id: { $ne: userId }, // excluding the current user
+      }).select("-password"); // Exclude the password field
+  
+      res.status(200).json(users);
+    } catch (err) {
+      console.error("Error fetching all users:", err.message);
+      res.status(500).json({ error: "Server error" });
+    }
+  };
+  
+
+
 
 
 
@@ -450,4 +469,5 @@ module.exports = {
     followUnFollowUser,
     updateUser,
     getSuggestedUsers,
+    getAllUsers,
 }
