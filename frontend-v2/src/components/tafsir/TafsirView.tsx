@@ -97,7 +97,7 @@ const TafsirView = ({ surahNumber, translation }) => {
               }
             >
               {entry.text.split("\n").map((line, i) => (
-                <pre key={i} className="leading-relaxed bangla-text whitespace-pre-wrap text-neutral-200">{line}</pre>
+                <pre key={i} className="leading-relaxed bangla-text whitespace-pre-wrap dark:text-neutral-200">{line}</pre>
               ))}
             </div>
           </div>

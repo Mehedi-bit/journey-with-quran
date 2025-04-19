@@ -413,9 +413,9 @@ const PostPage = () => {
                   <div className="flex flex-row gap-1 items-center" onClick={handleLike}>
                       <Heart size={20}
                           onClick={handleLike}
-                          className={`cursor-pointer ${liked? "text-red-500 fill-red-500" : "text-white" }`}
+                          className={`cursor-pointer ${liked? "text-red-500 fill-red-500" : "dark:text-white" }`}
                       />
-                      <span className="text-sm text-gray-100">
+                      <span className="text-sm dark:text-gray-100">
                           {currentPost?.likes.length}
                       </span>
                   </div>
@@ -425,7 +425,7 @@ const PostPage = () => {
                         <a href="#comment-box">
                             <MessageCircle size={20} />
                         </a>
-                        <span className="text-sm text-gray-100">
+                        <span className="text-sm dark:text-gray-100">
                                 {currentPost?.replies.length}
                         </span>
                   </div>

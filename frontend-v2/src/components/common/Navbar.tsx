@@ -36,6 +36,7 @@ import { authStateAtom } from "@/atoms/authAtom";
 import { userAtom } from "@/atoms/userAtom";
 import LogoutButton from "../auth/LogoutButton";
 import FullscreenButton from "./FullscreenButton";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 interface MenuItem {
   title: string;
@@ -139,6 +140,10 @@ const Navbar = ({
       title: "Contact",
       url: "contact",
     },
+    {
+      title: "Guide",
+      url: "guide",
+    },
     ],
   
 
@@ -185,6 +190,8 @@ const Navbar = ({
 
 
           <div className="flex gap-10 items-center">
+
+            <ThemeSwitcher />
 
             <FullscreenButton />
 
@@ -288,7 +295,10 @@ const Navbar = ({
 
                   <div className="flex flex-col gap-5">
 
-                    <FullscreenButton />
+                    <Button variant="outline" className="flex items-center justify-around">
+                      <ThemeSwitcher />
+                      <FullscreenButton />
+                    </Button>
                     
 
                     {

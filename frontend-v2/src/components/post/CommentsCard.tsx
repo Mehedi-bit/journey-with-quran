@@ -126,7 +126,7 @@ const CommentsCard = ({post, userData}) => {
 
       <div className="flex flex-col gap-2 border-b-0 border-gray-500">
         <h1 className="font-semibold text-lg">Replies</h1>
-        <p className="text-sm text-gray-300">Join the discussion and share your thoughts</p>
+        <p className="text-sm dark:text-gray-300">Join the discussion and share your thoughts</p>
       </div>
 
 
@@ -152,8 +152,7 @@ const CommentsCard = ({post, userData}) => {
 
 
 
-      {/* comments or replies - TODO: make it dynamic */}
-
+      
 
 
       {

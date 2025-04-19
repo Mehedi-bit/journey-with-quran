@@ -155,7 +155,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
           // **double-star** → bold + text-lg
           if (part.startsWith("**") && part.endsWith("**")) {
             return (
-              <strong key={index} className="font-bold text-white text-lg">
+              <strong key={index} className="font-bold text-neutral-900 dark:text-white text-lg">
                 {part.slice(2, -2)}
               </strong>
             );
@@ -164,7 +164,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
           // *single-star* → bold
           if (part.startsWith("*") && part.endsWith("*")) {
             return (
-              <strong key={index} className="font-bold text-white">
+              <strong key={index} className="font-bold text-neutral-900 dark:text-white">
                 {part.slice(1, -1)}
               </strong>
             );
@@ -173,7 +173,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
           // #hashtag → blue
           if (part.startsWith("#")) {
             return (
-              <span key={index} className="text-blue-400">
+              <span key={index} className="text-blue-700  dark:text-blue-400">
                 {part}
               </span>
             );
@@ -187,7 +187,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
                 href={part}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 underline"
+                className="text-blue-700  dark:text-blue-400 underline"
               >
                 {part}
               </a>
@@ -212,7 +212,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
     return (
 
-            <Card className="mb-8">
+            <Card className="mb-8 bg-primary/5 dark:bg-neutral-950">
                 <CardHeader className="flex flex-row justify-between">
 
                     {/* Navigate to /username on clicking on this div */}
@@ -235,7 +235,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
 
                     <div className="flex gap-5 items-center">
-                        <small className="text-sm text-gray-400">
+                        <small className="text-sm text-gray-900 dark:text-gray-400">
                             {  formatDistanceToNow(new Date(post.createdAt))  } ago
                         </small>
 
@@ -249,7 +249,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
                 <Link to={`/${post.postedBy.username}/post/${post._id}`} className="cursor-pointer">
                     <CardContent>
-                        <pre className="bangla-text whitespace-pre-wrap text-neutral-200">
+                        <pre className="bangla-text whitespace-pre-wrap text-neutral-900 dark:text-neutral-200">
                             
                             {
                                 formatPostText(
@@ -297,9 +297,9 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
                     <div className="flex flex-row gap-1 items-center" onClick={handleLike}>
                         <Heart size={20}
                             onClick={handleLike}
-                            className={`cursor-pointer ${liked? "text-red-500 fill-red-500" : "text-white" }`}
+                            className={`cursor-pointer ${liked? "text-red-500 fill-red-500" : "dark:text-white" }`}
                         />
-                        <span className="text-sm text-gray-100">
+                        <span className="text-sm text-black dark:text-gray-100">
                             {post.likes.length}
                         </span>
                     </div>
@@ -310,8 +310,8 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
                         onClick={handleCommentClickNavigation}
                     >
                         
-                            <MessageCircle size={20} />
-                            <span className="text-sm text-gray-100">
+                            <MessageCircle size={20} className="text-black dark:text-white" />
+                            <span className="text-sm dark:text-gray-100">
                                 {post.replies.length}
                             </span>
                         

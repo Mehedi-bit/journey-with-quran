@@ -319,7 +319,7 @@ import { serverUrl } from "@/serverUrl"
 
           <div className="mt-4">
             <FormLabel className="mb-2 block text-center text-lg font-medium">
-              <Button variant="outline" onClick={(e) => {
+              <Button variant="secondary" onClick={(e) => {
                 e.preventDefault()
                 setShowAvatars(prev => !prev)
               }}>

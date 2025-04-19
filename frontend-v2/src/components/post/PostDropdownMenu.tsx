@@ -74,7 +74,7 @@ export function PostDropDownMenu({post}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <EllipsisVertical color="white" size={18} className="cursor-pointer"/>
+        <EllipsisVertical size={18} className="cursor-pointer text-black dark:text-white"/>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
 
