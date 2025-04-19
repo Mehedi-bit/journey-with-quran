@@ -202,9 +202,9 @@ const Navbar = ({
 
             <SuggestedUserButton />
 
-            <ThemeSwitcher />
+            <ThemeSwitcher className="" />
 
-            <FullscreenButton />
+            <FullscreenButton className="" />
 
 
 
@@ -245,9 +245,12 @@ const Navbar = ({
             
             }
 
-            
-
           </div>
+
+
+
+          {/* MOBILE NAV */}
+
         </nav>
         <div className="block lg:hidden">
           <div className="flex items-center justify-between">
@@ -305,9 +308,9 @@ const Navbar = ({
                       </Button>
                     </Link>
 
-                    <Button variant="secondary" className="flex items-center justify-around">
-                      <ThemeSwitcher />
-                      <FullscreenButton />
+                    <Button variant="secondary" className="">
+                      <ThemeSwitcher className="w-1/2 "/>
+                      <FullscreenButton className="w-1/2"/>
                     </Button>
                     
 

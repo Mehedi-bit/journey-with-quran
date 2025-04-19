@@ -1,7 +1,12 @@
 import { Maximize } from "lucide-react";
 import  { useState } from "react";
 
-const FullscreenButton = () => {
+
+interface FullscreenButtonProps {
+  className: string;
+}
+
+const FullscreenButton = ({ className }: FullscreenButtonProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const toggleFullscreen = () => {
@@ -34,8 +39,9 @@ const FullscreenButton = () => {
     //   {isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
     // </button>
 
-    <Maximize onClick={toggleFullscreen} size={20} className="cursor-pointer mr-10" />
-
+    <div className={`${className} flex items-center justify-center`} onClick={toggleFullscreen}>
+      <Maximize size={20} className="cursor-pointer mr-10" />
+    </div>
   );
 };
 
