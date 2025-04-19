@@ -246,7 +246,7 @@ const PostCreateSurface = ({
     <Card className="w-full p-4 bg-card mb-3">
       <div className="flex items-start gap-4">
         
-        <Avatar className="h-10 w-10 cursor-pointer" onClick={(e) => {
+        <Avatar className="h-10 w-10 border cursor-pointer" onClick={(e) => {
             e.preventDefault();
             if (!currentUserInfo) {
               navigate("/auth");

@@ -48,7 +48,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ reply }) => {
 
             <div className="w-full flex flex-col gap-2">
 
-                <div className="flex flex-col gap-1 border rounded-lg p-3 w-full bg-neutral-100 dark:bg-neutral-900">
+                <div className="flex flex-col gap-1 border rounded-lg p-3 w-full bg-white dark:bg-neutral-900">
                     <h2 className="font-semibold">{name}</h2>
                     <p className="text-sm dark:text-gray-200">{text}</p>
                 </div>

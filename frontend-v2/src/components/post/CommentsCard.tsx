@@ -142,7 +142,9 @@ const CommentsCard = ({post, userData}) => {
           </Avatar>
 
           <form className="flex flex-col w-full gap-4" onSubmit={handleCommentSubmit}>
-            <Textarea value={comment} placeholder="Type your comment here." onChange={(e) => setComment(e.target.value)} />
+            <Textarea value={comment} placeholder="Type your comment here." onChange={(e) => setComment(e.target.value)} 
+              className="bg-white dark:bg-neutral-950"  
+            />
             <Button size="sm" className="w-20">
               {loading ? <LoaderCircle className="animate-spin"/> : "Comment"}
             </Button>

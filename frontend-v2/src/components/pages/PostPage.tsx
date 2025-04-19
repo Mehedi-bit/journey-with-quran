@@ -262,7 +262,7 @@ const PostPage = () => {
           // **double-star** → bold + text-lg
           if (part.startsWith("**") && part.endsWith("**")) {
             return (
-              <strong key={index} className="font-bold text-white text-lg">
+              <strong key={index} className="font-bold text-black dark:text-white text-lg">
                 {part.slice(2, -2)}
               </strong>
             );
@@ -271,7 +271,7 @@ const PostPage = () => {
           // *single-star* → bold
           if (part.startsWith("*") && part.endsWith("*")) {
             return (
-              <strong key={index} className="font-bold text-white">
+              <strong key={index} className="font-bold text-black dark:text-white">
                 {part.slice(1, -1)}
               </strong>
             );
@@ -345,9 +345,9 @@ const PostPage = () => {
 
   return (
 
-      <div className="px-4 md:px-[20%]">
+      <div className="px-4 md:px-[20%] ">
 
-          <Card className="mb-8 ">
+          <Card className="mb-8 bg-primary/5 dark:bg-neutral-950">
               <CardHeader className="flex flex-row justify-between">
                   <div className="flex flex-row gap-2">
                       <img 

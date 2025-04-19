@@ -85,7 +85,7 @@ const GuidePage = () => {
 
             <div className="flex flex-col">
 
-                <h1 className={`text-3xl md:text-4xl font-bold text-primary mb-3 ${textClass}`} >
+                <h1 className={`english-text text-3xl md:text-4xl font-bold text-primary mb-3 ${textClass}`} >
                     {t.title} 
                 </h1>
                 <p className={`text-muted-foreground text-lg max-w-2xl ${textClass}`} >
@@ -133,7 +133,11 @@ const GuidePage = () => {
                 <div
                   className={`text-sm mt-2 text-muted-foreground ${textClass}`}
                 >
-                  — Book of Allah | Surah Sad (38:29)
+                  { language === "en" ?
+                    "— Book of Allah | Surah Sad (38:29)" 
+                                      : 
+                    "— মহান আল্লাহ | সূরা সাদ (৩৮:২৯)"
+                  }
                 </div>
               </blockquote>
 
