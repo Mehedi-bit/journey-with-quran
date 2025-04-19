@@ -80,7 +80,7 @@ const GuidePage = () => {
       <div className="flex flex-col min-h-screen bg-background">
         {/* Header Section */}
         <header className="py-12 md:py-16 px-4 md:px-6 lg:px-8 bg-gradient-to-b from-primary/5 to-background">
-          <div className="max-w-4xl mx-auto w-full flex items-center justify-between">
+          <div className="max-w-4xl mx-auto w-full flex  justify-between">
             
 
             <div className="flex flex-col">
@@ -134,9 +134,9 @@ const GuidePage = () => {
                   className={`text-sm mt-2 text-muted-foreground ${textClass}`}
                 >
                   { language === "en" ?
-                    "— Book of Allah | Surah Sad (38:29)" 
+                    "— Surah As-Saad (38:29)" 
                                       : 
-                    "— মহান আল্লাহ | সূরা সাদ (৩৮:২৯)"
+                    "— সূরা আস-সোয়াদ (৩৮:২৯)"
                   }
                 </div>
               </blockquote>
@@ -257,10 +257,10 @@ const GuidePage = () => {
         {/* Footer */}
         <footer className="py-8 px-4 md:px-6 lg:px-8 border-t border-border">
           <div className="max-w-4xl mx-auto w-full text-center text-muted-foreground text-sm">
-            <p className={textClass}>
+            <p className={`${textClass} english-text`}>
               {t.footer.copyright} {new Date().getFullYear()}
             </p>
-            <p className={`mt-1 ${textClass}`}>{t.footer.tagline}</p>
+            <p className={`mt-1 ${textClass} english-text`}>{t.footer.tagline}</p>
           </div>
         </footer>
       </div>
