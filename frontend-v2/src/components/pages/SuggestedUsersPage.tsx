@@ -21,7 +21,7 @@ type SuggestedUser = {
 };
 
 const fallbackAvatar =
-  "https://ik.imagekit.io/mehedi004/Avatars/default2?updatedAt=1745075903036";
+  "https://ik.imagekit.io/mehedi004/Avatars/default3.jpg?updatedAt=1745079116757";
 
 const SuggestedUsersPage = () => {
   const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
