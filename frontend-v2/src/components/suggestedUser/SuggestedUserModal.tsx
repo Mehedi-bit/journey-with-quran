@@ -210,7 +210,7 @@ const SuggestedUsersModal = ({ isOpen, onClose }: SuggestedUsersModalProps) => {
             className="text-primary font-medium"
             onClick={handleSeeMore}
           >
-            See More Users
+            See more users
           </Button>
         </div>
       </DialogContent>
