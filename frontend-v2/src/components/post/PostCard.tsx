@@ -224,11 +224,11 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
                     } } >
 
                         <img 
-                            className="h-10 w-10 rounded-full object-cover border border-gray-700 p-0.5" 
+                            className="h-10 w-10 rounded-full object-cover border border-gray-700 p-0.5 cursor-pointer" 
                             src={post?.postedBy?.profilePic} alt="" />
                         <div>
-                            <CardTitle>{post?.postedBy?.name}</CardTitle>
-                            <CardDescription>@{post?.postedBy?.username}</CardDescription>
+                            <CardTitle className="cursor-pointer">{post?.postedBy?.name}</CardTitle>
+                            <CardDescription className="cursor-pointer">@{post?.postedBy?.username}</CardDescription>
                         </div>
                         
                     </div>

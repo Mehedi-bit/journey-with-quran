@@ -47,7 +47,7 @@ export type Translation = {
             "Write as you write usually.",
             "Single stars (*text*) for bold.",
             "Double stars (**text**) for extra bold.",
-            "Recommended: Use hash tags (#surah_nisa  #nisa  #asma_ul_husna) to mention topics",
+            "Recommended: Use hash tags (#surah_nisa  #nisa  #asma_ul_husna) to mention topics.",
             "Verse tab for embedding short Quranic line or quote visually."
         ],
         title3: "Engage Constructively",

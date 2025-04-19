@@ -97,6 +97,8 @@ const UserHeader: React.FC<UserHeaderProps> = ({userData}) => {  // user that we
     
     console.log("userData props value", userData)
 
+    const avatarFallbackImg = "https://ik.imagekit.io/mehedi004/Avatars/default3.jpg?updatedAt=1745079116757"
+
     
     return (
 
@@ -109,9 +111,9 @@ const UserHeader: React.FC<UserHeaderProps> = ({userData}) => {  // user that we
 
                     {
                         userData.profilePic !== "" ? (
-                            <img className="rounded-full w-full h-full object-cover" src={userData.profilePic} alt="" />
+                            <img className="rounded-full w-full h-full border object-cover" src={userData.profilePic} alt="" />
                         ) : (
-                            <img className="rounded-full w-full h-full object-cover" src="https://api.dicebear.com/9.x/lorelei/svg?seed=Emery" alt="" />
+                            <img className="rounded-full w-full h-full object-cover" src={avatarFallbackImg} alt="" />
                         )
                     }
 
@@ -147,12 +149,12 @@ const UserHeader: React.FC<UserHeaderProps> = ({userData}) => {  // user that we
                     <p className="text-gray-500">@{userData.username}</p>
                     
                     <div className="following-container flex flex-row gap-5 items-center">
-                        <p className="m-0 text-gray-400"> <span className="mr-1">{userData.followers.length}</span>    followers</p>
+                        <p className="dark:text-gray-400"> <span className="mr-1">{userData.followers.length}</span>    followers</p>
                      
-                        <p className="m-0 text-gray-400"><span className="mr-1">{userData.following.length}</span>  following</p>
+                        <p className="dark:text-gray-400"><span className="mr-1">{userData.following.length}</span>  following</p>
                     </div>
                     
-                    <p className="text-gray-300 text-sm">{userData.bio}</p>
+                    <p className="text-primary dark:text-gray-300 text-sm">{userData.bio}</p>
                     
                     {/* @TODO: Show this only if it is current user */}
                     {/* <Edit size={18  }/> */}

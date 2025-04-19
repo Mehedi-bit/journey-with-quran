@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { serverUrl } from "@/serverUrl";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Define the type for a suggested user
 type SuggestedUser = {
@@ -28,6 +29,8 @@ const SuggestedUsersPage = () => {
   const [followingStatus, setFollowingStatus] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState<Record<string, boolean>>({});
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSuggestedUsers = async () => {
@@ -144,15 +147,17 @@ const SuggestedUsersPage = () => {
                 className="flex flex-col p-4 rounded-lg border bg-card hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start gap-3 mb-3">
-                  <Avatar className="h-12 w-12 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
+                  <Avatar className="h-12 w-12 ring-2 ring-primary/20 ring-offset-2 ring-offset-background"
+                    onClick={() => navigate(`/${user.username}`)}
+                  >
                     <AvatarImage
                       src={user.profilePic || fallbackAvatar || undefined}
                       alt={user.name}
-                      className="object-cover"
+                      className="object-cover cursor-pointer"
                     />
                     <AvatarFallback>{user.name[0]}</AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
+                  <div className="flex-1 cursor-pointer"  onClick={() => navigate(`/${user.username}`)}>
                     <h3 className="font-semibold text-card-foreground">{user.name}</h3>
                     <p className="text-xs text-muted-foreground">@{user.username}</p>
                   </div>
