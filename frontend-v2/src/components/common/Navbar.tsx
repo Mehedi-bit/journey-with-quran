@@ -1,4 +1,4 @@
-import { Book, Menu, Sunset, Trees, Zap, UserRound } from "lucide-react";
+import { Book, Menu, Sunset, Trees, Zap, UserRound, Users } from "lucide-react";
 
 import {
   Accordion,
@@ -37,6 +37,7 @@ import { userAtom } from "@/atoms/userAtom";
 import LogoutButton from "../auth/LogoutButton";
 import FullscreenButton from "./FullscreenButton";
 import ThemeSwitcher from "./ThemeSwitcher";
+import SuggestedUserButton from "../suggestedUser/SuggestedUserButton";
 
 interface MenuItem {
   title: string;
@@ -191,6 +192,8 @@ const Navbar = ({
 
           <div className="flex gap-10 items-center">
 
+            <SuggestedUserButton />
+
             <ThemeSwitcher />
 
             <FullscreenButton />
@@ -295,7 +298,13 @@ const Navbar = ({
 
                   <div className="flex flex-col gap-5">
 
-                    <Button variant="outline" className="flex items-center justify-around">
+                    <Link to="/suggested-users">
+                      <Button variant={"outline"} className="w-full">
+                        Suggested Users
+                      </Button>
+                    </Link>
+
+                    <Button variant="secondary" className="flex items-center justify-around">
                       <ThemeSwitcher />
                       <FullscreenButton />
                     </Button>
