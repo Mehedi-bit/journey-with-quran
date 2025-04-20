@@ -156,7 +156,7 @@ const SuggestedUsersModal = ({ isOpen, onClose }: SuggestedUsersModalProps) => {
           {loading ? (
             renderSkeletons()
           ) : suggestedUsers.length === 0 ? (
-            <p className="text-center text-muted-foreground">No users found.</p>
+            <p className="text-center text-muted-foreground">{!currentUserInfo ? "Please login to see users" : "Not available"}</p>
           ) : (
             suggestedUsers.map((user) => (
               <div
