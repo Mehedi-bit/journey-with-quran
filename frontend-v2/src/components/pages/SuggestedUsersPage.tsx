@@ -8,6 +8,8 @@ import { serverUrl } from "@/serverUrl";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { userAtom } from "@/atoms/userAtom";
+import { useRecoilValue } from "recoil";
 
 // Define the type for a suggested user
 type SuggestedUser = {
@@ -29,6 +31,8 @@ const SuggestedUsersPage = () => {
   const [followingStatus, setFollowingStatus] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState<Record<string, boolean>>({});
+
+  const currentUserInfo = useRecoilValue(userAtom);
 
   const navigate = useNavigate();
 
@@ -64,6 +68,13 @@ const SuggestedUsersPage = () => {
   }, []);
 
   const handleFollowToggle = async (userId: string) => {
+
+    if (!currentUserInfo) {
+      toast("You need to login first");
+      navigate("/auth");
+      return;
+    }
+
     setIsFollowing((prev) => ({ ...prev, [userId]: true }));
 
     // Optimistically toggle
@@ -188,7 +199,7 @@ const SuggestedUsersPage = () => {
 
           {filteredUsers.length === 0 && (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">No users found matching your search.</p>
+              <p className="text-muted-foreground">{!currentUserInfo? "Please login" : "Not available"}</p>
             </div>
           )}
         </>

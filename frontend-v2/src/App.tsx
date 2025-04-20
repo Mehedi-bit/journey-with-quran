@@ -54,7 +54,8 @@ function App() {
                 <Route path="/tafsir" element={<TafsirPage />} />
                 <Route path="/hadith" element={<HadithPage />} />
                 <Route path="/guide" element={<GuidePage />} />
-                <Route path="/suggested-users" element={userInfo ? <SuggestedUsersPage /> : <Navigate to={"/auth"} />} />
+                {/* <Route path="/suggested-users" element={userInfo ? <SuggestedUsersPage /> : <Navigate to={"/auth"} />} /> */}
+                <Route path="/suggested-users" element={<SuggestedUsersPage />} />
                 
 
 

@@ -73,6 +73,7 @@ const SuggestedUsersModal = ({ isOpen, onClose }: SuggestedUsersModalProps) => {
   const handleFollowToggle = async (userId: string) => {
     if (!currentUserInfo) {
       toast("You need to login first");
+      navigate("/auth");
       return;
     }
 
