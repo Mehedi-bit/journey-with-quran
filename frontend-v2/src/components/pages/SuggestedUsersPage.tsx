@@ -144,7 +144,7 @@ const SuggestedUsersPage = () => {
             {filteredUsers.map((user) => (
               <div
                 key={user._id}
-                className="flex flex-col p-4 rounded-lg border bg-card hover:shadow-md transition-shadow"
+                className="flex flex-col p-4 rounded-lg md:border bg-card hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start gap-3 mb-3">
                   <Avatar className="h-12 w-12 ring-2 ring-primary/20 ring-offset-2 ring-offset-background"
@@ -179,7 +179,7 @@ const SuggestedUsersPage = () => {
                     )}
                   </Button>
                 </div>
-                <p className="text-sm text-muted-foreground mb-3">
+                <p className="text-sm text-muted-foreground mb-3 hidden md:block">
                   {user?.bio || "طالب العلم"}
                 </p>
               </div>
