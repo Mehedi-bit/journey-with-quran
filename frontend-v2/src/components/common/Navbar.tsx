@@ -173,8 +173,8 @@ const Navbar = ({
 
   return (
     <section className="py-4 px-10 mb-5">
-      <div className="container">
-        <nav className="hidden justify-between lg:flex">
+      <div className="container mx-auto">
+        <nav className="hidden justify-between lg:flex w-full">
           <div className="flex items-center gap-6">
             <Link to={logo.url} className="flex items-center gap-2">
               <img src={logo.src} className="w-8" alt={logo.alt} />
