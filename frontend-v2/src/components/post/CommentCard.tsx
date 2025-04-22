@@ -85,7 +85,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ post, reply }) => {
 
 
   return (
-    <div className="mb-4">
+    <div className="mb-0">
       <div className="flex flex-row gap-3">
         <Link to={`/${username}`} className="flex-shrink-0">
           <Avatar>
