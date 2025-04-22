@@ -19,6 +19,7 @@ import { userAtom } from "@/atoms/userAtom";
 import postsAtom from "@/atoms/postsAtom";
 import  {PostDropDownMenu}  from "./PostDropdownMenu";
 import { serverUrl } from "@/serverUrl";
+import { currentPostAtom } from "@/atoms/currentPostAtom";
 
 
 
@@ -249,7 +250,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
                 <Link to={`/${post.postedBy.username}/post/${post._id}`} className="cursor-pointer">
                     <CardContent>
-                        <pre className="bangla-text whitespace-pre-wrap text-neutral-900 dark:text-neutral-200">
+                        <pre className="bangla-text whitespace-pre-wrap text-neutral-900 dark:text-neutral-200 ">
                             
                             {
                                 formatPostText(

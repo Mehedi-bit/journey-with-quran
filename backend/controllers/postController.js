@@ -177,57 +177,111 @@ const likeUnlikePost = async (req, res) => {
 
 
 
-
 const replyToPost = async (req, res) => {
     try {
+        const postId = req.params.id;
+        const { text } = req.body;
+        const userId = req.user._id;
+        const userProfilePic = req.user.profilePic;
+        const name = req.user.name;
+        const username = req.user.username;
 
-        const postId = req.params.id
-        const { text } = req.body
-        const userId = req.user._id    // coming from the protectRoute middleware as payload in the req
-        const userProfilePic = req.user.profilePic  // coming from the protectRoute middleware as payload in the req
-        const name = req.user.name
-        const username = req.user.username
-
-
-        // check if the text field is empty
         if (!text) {
-            return res.status(400).json({ error: "Text field is required" })
+            return res.status(400).json({ error: "Text field is required" });
         }
 
-        
-        // check if the post exists
-        const post = await Post.findById(postId)
+        const post = await Post.findById(postId);
         if (!post) {
-            return res.status(404).json({ error: "Post not found" })
+            return res.status(404).json({ error: "Post not found" });
         }
 
-
-
-        // create a reply object
         const reply = {
             userId,
             text,
             userProfilePic,
             name,
             username
-        }
+        };
 
-        // add the reply to the post
-        post.replies.push(reply)  // js push operation
-        // save the post to the database
-        await post.save()
+        // Add the reply to the post
+        post.replies.push(reply);
+        await post.save();
 
+        // Get the last reply (which is the one we just added) with its generated _id
+        const savedReply = post.replies[post.replies.length - 1];
 
-        // send a response
-        res.status(201).json( reply )
-
-
+        // Send back the complete reply with _id
+        res.status(201).json(savedReply);
 
     } catch (err) {
-        res.status(500).json({ error: err.message })
-        console.log("Error from replyToPost controller: ", err.message)
+        res.status(500).json({ error: err.message });
+        console.log("Error from replyToPost controller: ", err.message);
     }
-}
+};
+
+
+
+
+const deleteComment = async (req, res) => {
+    try {
+        const commentId = req.params.commentId;
+        const postId = req.body.postId;
+
+        console.log("🛠 Backend: Received postId:", postId);
+        console.log("🛠 Backend: Received commentId:", commentId);
+
+        // 1. Check if the post exists
+        const post = await Post.findById(postId);
+        if (!post) {
+            console.log("❌ Post not found");
+            return res.status(404).json({ error: "Post not found" });
+        }
+
+        // 2. Log all replies for debugging
+        console.log("🗂 All replies in the post:");
+        post.replies.forEach((r, i) => {
+            console.log(`↳ Reply ${i}: _id = ${r._id?.toString()}, userId = ${r.userId?.toString()}`);
+        });
+
+        // 3. Try to find the comment index manually
+        const commentIndex = post.replies.findIndex(reply => {
+            return reply._id?.toString() === commentId;
+        });
+
+        if (commentIndex === -1) {
+            console.log("❌ Comment not found by ID match");
+            return res.status(404).json({ error: "Comment not found" });
+        }
+
+        const comment = post.replies[commentIndex];
+
+        // 4. Check if the user is authorized to delete the comment
+        if (comment.userId.toString() !== req.user._id.toString()) {
+            console.log("🚫 Unauthorized deletion attempt by:", req.user._id);
+            return res.status(401).json({ error: "You are not authorized to delete this comment" });
+        }
+
+        // 5. Delete the comment
+        post.replies.splice(commentIndex, 1);
+
+        // 6. Save updated post
+        await post.save();
+
+        // 7. Respond
+        console.log("✅ Comment deleted successfully");
+        return res.status(200).json({
+            message: "Comment deleted successfully",
+            replies: post.replies
+        });
+
+    } catch (err) {
+        console.log("Error in deleteComment controller:", err.message);
+        return res.status(500).json({ error: "Server error: " + err.message });
+    }
+};
+
+  
+
 
 
 
@@ -329,4 +383,5 @@ module.exports = {
     getFeedPosts,
     getAllPosts,
     getUserPosts,
+    deleteComment,
 }

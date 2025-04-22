@@ -76,7 +76,7 @@ export function PostDropDownMenu({post}) {
       <DropdownMenuTrigger asChild>
         <EllipsisVertical size={18} className="cursor-pointer text-black dark:text-white"/>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-36">
 
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer" onClick={()=>{
@@ -91,12 +91,11 @@ export function PostDropDownMenu({post}) {
 
           }}>
             Save the Post
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <DropdownMenuShortcut></DropdownMenuShortcut>
           </DropdownMenuItem>
           
-          <DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
             Report
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
 
 
@@ -106,7 +105,6 @@ export function PostDropDownMenu({post}) {
               
                 <DropdownMenuItem onClick={handleDeletePost}>
                   Delete the post
-                  <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
                 </DropdownMenuItem>
             
           }

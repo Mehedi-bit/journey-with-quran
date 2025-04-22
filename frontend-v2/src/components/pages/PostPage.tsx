@@ -345,9 +345,9 @@ const PostPage = () => {
 
   return (
 
-      <div className="px-4 md:px-[20%] ">
+      <div className="px-4 md:px-[20%] pb-10">
 
-          <Card className="mb-8 bg-primary/5 dark:bg-neutral-950">
+          <Card className="mb-8 pb-4 bg-primary/5 dark:bg-neutral-950">
               <CardHeader className="flex flex-row justify-between">
                   <div className="flex flex-row gap-2">
                       <img 

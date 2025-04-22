@@ -1,5 +1,5 @@
 const express = require('express')
-const { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getFeedPosts, getAllPosts, getUserPosts } = require('../controllers/postController.js')
+const { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getFeedPosts, getAllPosts, getUserPosts, deleteComment } = require('../controllers/postController.js')
 const protectRoute = require('../middlewares/protectRoute.js')
 
 const router = express.Router()
@@ -14,6 +14,8 @@ router.post('/create', protectRoute, createPost)
 router.delete('/:id', protectRoute, deletePost)
 router.put('/like/:id', protectRoute, likeUnlikePost)
 router.put('/reply/:id', protectRoute, replyToPost)
+router.put('/reply/delete/:commentId', protectRoute, deleteComment)
+
 
 
 

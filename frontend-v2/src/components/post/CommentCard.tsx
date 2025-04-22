@@ -1,74 +1,62 @@
-
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
-
-
+import { CommentDropdownMenu } from "./CommentDropdownMenu";
 
 interface CommentCardProps {
-    reply: {
-        userId: string;
-        text: string;
-        userProfilePic: string;
-        username: string;
-        name: string;
-        _id: string;
-    }
+  post: {
+    _id: string;
+    replies: Array<{
+      _id: string;
+      userId: string;
+      text: string;
+      userProfilePic: string;
+      username: string;
+      name: string;
+    }>;
+  };
+  reply: {
+    _id: string;
+    userId: string;
+    text: string;
+    userProfilePic: string;
+    username: string;
+    name: string;
+  };
 }
 
-
-
-const CommentCard: React.FC<CommentCardProps> = ({ reply }) => {
-
-    const { userId, text, userProfilePic, username, name } = reply;
-
-    const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(1);
-
-    const handleLike = () => {
-            setLiked(!liked)
-            setLikeCount(liked? likeCount-1 : likeCount+1)
-    }
-
-
-
+const CommentCard: React.FC<CommentCardProps> = ({ post, reply }) => {
+  const { text, userProfilePic, username, name, _id } = reply;
 
   return (
-    <div>
-        <div className="flex flex-row gap-3">
+    <div className="mb-4">
+      <div className="flex flex-row gap-3">
+        <Link to={`/${username}`} className="flex-shrink-0">
+          <Avatar>
+            <AvatarImage 
+              className="object-cover" 
+              src={userProfilePic} 
+              alt={`${name}'s profile`} 
+            />
+            <AvatarFallback>🤍</AvatarFallback>
+          </Avatar>
+        </Link>
 
-            <Link to={`/${username}`}>
-                <Avatar>
-                    <AvatarImage className="object-cover" src={userProfilePic} alt="user" />
-                    <AvatarFallback>🤍</AvatarFallback>
-                </Avatar>
-            </Link>
-
-
-            <div className="w-full flex flex-col gap-2">
-
-                <div className="flex flex-col gap-1 border rounded-lg p-3 w-full bg-white dark:bg-neutral-900">
-                    <h2 className="font-semibold">{name}</h2>
-                    <p className="text-sm dark:text-gray-200">{text}</p>
-                </div>
-
-
-                {/* @TODO: LOVE REACT ON COMMENT */}
-                {/* <div className="flex flex-row items-center gap-2">
-                    <Heart size={18} className={`ml-3 cursor-pointer ${liked? "text-rose-500 fill-rose-500" : "text-gray-500"}`}
-                        onClick={handleLike}
-                    />
-
-                    <span className="text-sm text-gray-500">{likeCount}</span>
-                </div> */}
-
-            </div>
-
+        <div className="w-full flex flex-row gap-2 items-start">
+          <div className="flex flex-col gap-1 border rounded-lg p-3 w-full bg-white dark:bg-neutral-900">
+            <h2 className="font-semibold">{name}</h2>
+            <p className="text-sm dark:text-gray-200">{text}</p>
+          </div>
+          
+          <CommentDropdownMenu 
+            post={post} 
+            comment={reply} 
+            commentId={_id} 
+          />
         </div>
-
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default CommentCard
+export default CommentCard;

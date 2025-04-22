@@ -52,67 +52,59 @@ const CommentsCard = ({post, userData}) => {
   const currentUserInfo = useRecoilValue(userAtom)
   const [posts, setPosts] = useRecoilState(postsAtom)
 
+
   const handleCommentSubmit = async (e) => {
-    e.preventDefault()
-
+    e.preventDefault();
+  
     if (!currentUserInfo) return toast("You need to login to comment");
-
     if (loading) return;
-
-    setLoading(true)
-
+    if (!comment.trim()) return toast("Comment cannot be empty");
+  
+    setLoading(true);
+  
     try {
-      
-      // server actions
       const res = await fetch(`${serverUrl}/api/posts/reply/${post._id}`, {
         method: "PUT",
-        credentials: 'include', // ✅ SEND COOKIE
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
           text: comment
         })
-      })
-
-
-      const data = await res.json()
-
+      });
+  
+      const data = await res.json();
+  
       if (data.error) {
-        console.log(data.error)
-        toast(data.error)
+        toast.error(data.error);
         return;
       }
-
-      
-      // otherwise, success
-
-      const updatedPosts = posts.map((p)=> {
-        if (p._id == post._id) {
-          return {...p, replies: [...p.replies, data]}
-        }
-
-        return p;
-      })
-
-      setPosts(updatedPosts)
-
-      console.log(data)
-      setLoading(false)
-      setComment("")
-
-
-    
+  
+      // ✅ Important: Verify the response contains _id before updating state
+      if (!data._id) {
+        throw new Error("Server didn't return comment ID");
+      }
+  
+      // Update state immutably
+      setPosts(prevPosts => 
+        prevPosts.map(p => 
+          p._id === post._id
+            ? { ...p, replies: [...p.replies, data] }
+            : p
+        )
+      );
+  
+      toast.success("Comment added successfully");
+      setComment("");
+  
     } catch (error) {
-      toast(`${error}`, {
-        description: "Failed to submit comment"
-      })
+      console.error("Comment submission error:", error);
+      toast.error(error.message || "Failed to submit comment");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-
-
-  }
+  };
 
 
 
@@ -162,6 +154,7 @@ const CommentsCard = ({post, userData}) => {
         post.replies.map((reply, index) => (
           <CommentCard
             key={reply._id}
+            post={post}
             reply={reply}
           />
         ))
