@@ -204,7 +204,7 @@ const PostCreateSurface = ({
             <div className="flex gap-2">
               <Button variant="outline" size="icon"
                 onClick={()=> {
-                  toast.info("Click on verse tab to visualize any quote.",
+                  toast.info("Use verse tab to visualize any quote.",
                     {
                       // description: "You can visualize any verse or part of a verse.",
                       action: {
