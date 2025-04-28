@@ -209,6 +209,9 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
     };
 
 
+    const fallbackAvatar =
+  "https://ik.imagekit.io/mehedi004/Avatars/default3.jpg?updatedAt=1745079116757";
+
 
 
     return (
@@ -226,7 +229,7 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
 
                         <img 
                             className="h-10 w-10 rounded-full object-cover border border-gray-700 p-0.5 cursor-pointer" 
-                            src={post?.postedBy?.profilePic} alt="" />
+                            src={post?.postedBy?.profilePic || fallbackAvatar } alt="" />
                         <div>
                             <CardTitle className="cursor-pointer">{post?.postedBy?.name}</CardTitle>
                             <CardDescription className="cursor-pointer">@{post?.postedBy?.username}</CardDescription>

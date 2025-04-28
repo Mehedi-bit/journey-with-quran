@@ -303,8 +303,8 @@ const Navbar = ({
                   <div className="flex flex-col gap-5">
 
                     <Link to="/suggested-users">
-                      <Button variant={"outline"} className="w-full">
-                        Suggested Users
+                      <Button className="w-full">
+                        <Users />
                       </Button>
                     </Link>
 
