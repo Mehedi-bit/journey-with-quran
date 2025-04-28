@@ -192,7 +192,7 @@ const SuggestedUsersPage = () => {
       <Separator className="mt-16" />
 
       {/* All Users Section */}
-      <h2 className="text-xl text-center font-bold text-primary mb-6 mt-8">Some Community Members</h2>
+      <h2 className="text-xl text-center font-bold text-primary mb-6 mt-8">Featured Community Members</h2>
       {loadingAll ? (
         <LoaderCircle className="animate-spin mx-auto" />
       ) : (
