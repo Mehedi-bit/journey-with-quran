@@ -13,7 +13,7 @@ const router = express.Router()
 
 router.get('/profile/:query', getUserProfile)
 router.get('/suggested', protectRoute, getSuggestedUsers)
-router.get('/all', protectRoute, getAllUsers) 
+router.get('/all', getAllUsers) 
 router.post('/signup', signupUser)
 router.post('/login', loginUser)
 router.post('/logout', logoutUser)

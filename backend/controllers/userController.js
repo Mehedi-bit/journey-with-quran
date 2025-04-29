@@ -443,9 +443,9 @@ const getAllUsers = async (req, res) => {
     try {
       const userId = req.user?._id; // Optional: If you want to exclude the current user
   
-      const users = await User.find({
-        _id: { $ne: userId }, // excluding the current user
-      }).select("-password"); // Exclude the password field
+    const users = await User.find({
+      _id: { $ne: userId }, // excluding the current user
+    }).select("-password -email"); // Exclude the password and email fields
   
       res.status(200).json(users);
     } catch (err) {
