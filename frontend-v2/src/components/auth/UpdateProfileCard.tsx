@@ -169,11 +169,6 @@ import { serverUrl } from "@/serverUrl"
     const [loading, setLoading] = useState(false)
 
 
-    console.log(inputs)
-
-
-
-    console.log(userInfo)
     
     const dropZoneConfig = {
       maxFiles: 5,
@@ -195,8 +190,6 @@ import { serverUrl } from "@/serverUrl"
 
 
       try {
-        console.log("this is after form submitting update form", inputs)
-        console.log("this is userinfo", userInfo)
 
         // server actions
         const res = await fetch(`${serverUrl}/api/users/update/${userInfo._id}`, {
@@ -210,7 +203,6 @@ import { serverUrl } from "@/serverUrl"
 
         
         const data = await res.json()
-        console.log("This is updated fetched data ", data)
 
         if (data.error) {
           console.log(data.error)

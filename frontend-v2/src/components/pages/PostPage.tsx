@@ -54,7 +54,6 @@ const PostPage = () => {
 
     //   get postID from url
     const { pid } = useParams<{ pid: string }>();
-    console.log("pid:", pid)
 
     const handleLike = async () => {
 
@@ -164,8 +163,6 @@ const PostPage = () => {
                 return;
             }
 
-            // otherwise, okay, setPost
-            console.log(data)
 
             setPosts([data])
             setLoading(false)
@@ -194,7 +191,6 @@ const PostPage = () => {
 
 
     
-    console.log("postedBy from postPage", postedBy)
 
     // get the user data of the user who posted this post
 
@@ -226,8 +222,6 @@ const PostPage = () => {
                     return;
                 }
 
-                // otherwise, okay, set the userData
-                console.log("userData", data)
 
                 setUserData(data)
                 setUserLoading(false)

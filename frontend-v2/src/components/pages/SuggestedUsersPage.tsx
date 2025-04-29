@@ -149,7 +149,7 @@ const SuggestedUsersPage = () => {
         Follow fellow learners sharing their Quran reflections and insights
       </p>
 
-      <div className="relative mb-8">
+      {/* <div className="relative mb-8">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
           type="text"
@@ -158,7 +158,7 @@ const SuggestedUsersPage = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-      </div>
+      </div> */}
 
       {/* Suggested Users Grid */}
       {loading ? (

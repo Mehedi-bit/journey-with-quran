@@ -37,7 +37,6 @@ const TafsirView = ({ surahNumber, translation }) => {
           url = `https://raw.githubusercontent.com/spa5k/tafsir_api/main/tafsir/en-tafisr-ibn-kathir/${surahNumber}.json`;
         }
 
-        console.log("Fetching URL: ", url);
 
         const data = await fetchWithRetry(url); // Use retry function
 

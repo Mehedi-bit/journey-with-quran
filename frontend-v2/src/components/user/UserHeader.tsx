@@ -78,7 +78,6 @@ const UserHeader: React.FC<UserHeaderProps> = ({userData}) => {  // user that we
 
 
 
-            console.log(data)
             // update the following state
             setFollowing(!following)
 
@@ -95,7 +94,6 @@ const UserHeader: React.FC<UserHeaderProps> = ({userData}) => {  // user that we
     }
 
     
-    console.log("userData props value", userData)
 
     const avatarFallbackImg = "https://ik.imagekit.io/mehedi004/Avatars/default3.jpg?updatedAt=1745079116757"
 

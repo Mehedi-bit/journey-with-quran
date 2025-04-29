@@ -31,7 +31,6 @@ const Home = () => {
 
                 
                 setPosts(data); // Store posts in state
-                console.log("data", data)
             } catch (error) {
                 toast(`${error}`, { description: "Failed to fetch posts" });
             } finally {
@@ -42,7 +41,6 @@ const Home = () => {
         fetchPosts();
     }, [setPosts]);
 
-    console.log("posts", posts)
 
     if (!posts || loading) {
         return (
@@ -60,7 +58,6 @@ const Home = () => {
         );
     }
 
-    console.log(posts.length)
 
     return (
         <div className="px-[5%] md:px-[20%] py-5">

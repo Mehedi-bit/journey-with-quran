@@ -64,7 +64,6 @@ export function PostDropDownMenu({post}) {
 
 
   if (!post) {
-    console.log("Post prop is undefined at first render");
     return null;
   }
 

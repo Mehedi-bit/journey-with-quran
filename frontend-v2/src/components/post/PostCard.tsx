@@ -64,9 +64,6 @@ const PostCard: React.FC<PostCardProps> = ({post, postedBy}) => {
     const [posts, setPosts] = useRecoilState(postsAtom)
 
 
-    console.log("post from postCard", post)
-    console.log("postedBy props", postedBy)
-
     
     const navigate = useNavigate()
 

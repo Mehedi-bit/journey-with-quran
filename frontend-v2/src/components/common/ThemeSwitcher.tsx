@@ -14,7 +14,6 @@ export default function ThemeSwitcher({ className }: ThemeSwitcherProps) {
     setTheme(theme === "light" ? "dark" : "light")
   }
 
-  console.log("theme is ::::::", theme)
 
   return (
     <div onClick={toggleTheme} className={`${className} cursor-pointer flex items-center justify-center`}>

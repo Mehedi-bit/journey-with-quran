@@ -120,7 +120,7 @@ const PostCreateSurface = ({
   };
 
 
-  console.log("posts after a new post from createSurface", posts)
+  
 
   return (
     <Card className="w-full p-4 bg-card mb-3">

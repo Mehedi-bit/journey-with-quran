@@ -52,7 +52,6 @@ export function LoginCard({
         
         // get response data
         const data = await res.json()
-        console.log(data)
 
         if (data.error) {
 
