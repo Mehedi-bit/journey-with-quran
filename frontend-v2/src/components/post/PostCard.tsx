@@ -19,7 +19,6 @@ import { userAtom } from "@/atoms/userAtom";
 import postsAtom from "@/atoms/postsAtom";
 import  {PostDropDownMenu}  from "./PostDropdownMenu";
 import { serverUrl } from "@/serverUrl";
-import { currentPostAtom } from "@/atoms/currentPostAtom";
 
 
 

@@ -7,84 +7,108 @@ import { userAtom } from "@/atoms/userAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import postsAtom from "@/atoms/postsAtom";
 import { serverUrl } from "@/serverUrl";
+import feedAtom from "@/atoms/feedAtom";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Home = () => {
-    const [posts, setPosts] = useRecoilState(postsAtom); // Store all posts
+    const [posts, setPosts] = useRecoilState(postsAtom);
+    const [feeds, setFeeds] = useRecoilState(feedAtom);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const currentUserInfo = useRecoilValue(userAtom)
+    const [selectedTab, setSelectedTab] = useState('forYou');
+    const currentUserInfo = useRecoilValue(userAtom);
 
     useEffect(() => {
-        const fetchPosts = async () => {
+        const fetchData = async () => {
             setLoading(true);
             setError(null);
+            
             try {
-                const res = await fetch(`${serverUrl}/api/posts/all`); // Fetch all posts
-                const data = await res.json();
-
-                if (!res.ok || data.error) {
-                    setError(data.error || "Failed to fetch posts");
-                    toast(data.error || "Failed to fetch posts");
-                    return;
+                if (selectedTab === 'forYou') {
+                    const res = await fetch(`${serverUrl}/api/posts/all`);
+                    const data = await res.json();
+                    
+                    if (!res.ok || data.error) throw new Error(data.error || "Failed to fetch posts");
+                    setPosts(data);
+                } else {
+                    if (!currentUserInfo) throw new Error("Login to view feeds");
+                    
+                    const res = await fetch(`${serverUrl}/api/posts/feed`, {
+                        credentials: 'include'
+                    });
+                    const data = await res.json();
+                    
+                    if (!res.ok || data.error) throw new Error(data.error || "Failed to fetch feed");
+                    setFeeds(data);
                 }
-
-                
-                setPosts(data); // Store posts in state
             } catch (error) {
-                toast(`${error}`, { description: "Failed to fetch posts" });
+                setError(error.message);
+                toast.error(error.message);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchPosts();
-    }, [setPosts]);
+        fetchData();
+    }, [selectedTab, currentUserInfo, setPosts, setFeeds]);
 
+    const renderContent = () => {
+        if (loading) {
+            return (
+                <div className="flex justify-center items-center h-40">
+                    <LoaderIcon className="animate-spin" />
+                </div>
+            );
+        }
 
-    if (!posts || loading) {
-        return (
-            <div className="flex justify-center items-center h-[80vh]">
-                <LoaderIcon className="animate-spin" />
-            </div>
+        if (error) {
+            return (
+                <div className="text-center mt-4 text-red-500">
+                    <p>{error}</p>
+                </div>
+            );
+        }
+
+        const data = selectedTab === 'forYou' ? posts : feeds;
+        const noPostsMessage = selectedTab === 'following' 
+            ? 'No posts from followed users' 
+            : 'No posts found';
+
+        return data.length > 0 ? (
+            data.map((post) => (
+                <PostCard
+                    key={post?._id}
+                    post={post}
+                    postedBy={post?.postedBy}
+                />
+            ))
+        ) : (
+            <p className="text-center mt-5 text-gray-500">{noPostsMessage}</p>
         );
-    }
-
-    if (error) {
-        return (
-            <div className="text-center mt-10 text-red-500">
-                <p>{error}</p>
-            </div>
-        );
-    }
-
+    };
 
     return (
         <div className="px-[5%] md:px-[20%] py-5">
             <PostCreateSurface currentUserInfo={currentUserInfo} />
+            
+            <Tabs 
+                defaultValue="forYou" 
+                value={selectedTab}
+                onValueChange={setSelectedTab}
+                className="mb-4"
+            >
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="forYou">Explore</TabsTrigger>
+                    <TabsTrigger 
+                        value="following"
+                        disabled={!currentUserInfo}
+                    >
+                        Following
+                    </TabsTrigger>
+                </TabsList>
+            </Tabs>
 
-            {/* Render posts dynamically */}
-            {posts.length > 0 ? (
-                posts.map((post) => (
-                    <PostCard
-                        key={post?._id}
-                        // postId={post._id}
-                        // likes={post.likes.length}
-                        // replies={post.replies.length}
-                        // postText={post.text}
-                        // postExtra={post.extra || null}
-                        // postImg={post.image || null}
-                        // name={post.postedBy?.name || "Unknown"}
-                        // username={post.postedBy?.username || "Unknown"}
-                        // profilePic={post.postedBy?.profilePic}
-                        // ayah={post?.extra}
-                        post={post}
-                        postedBy={post?.postedBy}
-                    />
-                ))
-            ) : (
-                <p className="text-center mt-5 text-gray-500">No posts found</p>
-            )}
+            {renderContent()}
         </div>
     );
 };

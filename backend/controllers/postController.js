@@ -322,6 +322,7 @@ const getFeedPosts = async (req, res) => {
 
 
 
+// get all posts
 
 const getAllPosts = async (req, res) => {
     try {

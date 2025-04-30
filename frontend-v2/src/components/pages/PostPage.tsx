@@ -28,6 +28,10 @@ const bgPics = [ayahBgPic, ayahBgPic3, ayahBgPic4];
 const randomBgPic = bgPics[Math.floor(Math.random() * bgPics.length)];
 
 
+const fallbackAvatar =
+"https://ik.imagekit.io/mehedi004/Avatars/default3.jpg?updatedAt=1745079116757";
+
+
 
 
 
@@ -346,7 +350,7 @@ const PostPage = () => {
                   <div className="flex flex-row gap-2">
                       <img 
                           className="h-10 w-10 rounded-full object-cover border border-gray-700 p-0.5" 
-                          src={userData?.profilePic} alt="" />
+                          src={userData?.profilePic || fallbackAvatar} alt="" />
                       <div>
                           <CardTitle>{userData?.name}</CardTitle>
                           <CardDescription>@{userData?.username}</CardDescription>
