@@ -9,6 +9,8 @@ import postsAtom from "@/atoms/postsAtom";
 import { serverUrl } from "@/serverUrl";
 import feedAtom from "@/atoms/feedAtom";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
     const [posts, setPosts] = useRecoilState(postsAtom);
@@ -17,6 +19,8 @@ const Home = () => {
     const [error, setError] = useState(null);
     const [selectedTab, setSelectedTab] = useState('forYou');
     const currentUserInfo = useRecoilValue(userAtom);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,8 +67,8 @@ const Home = () => {
 
         if (error) {
             return (
-                <div className="text-center mt-4 text-red-500">
-                    <p>{error}</p>
+                <div className="text-center mt-4">
+                    <Button variant={"link"} onClick={() => navigate('/auth')} >{error}</Button>
                 </div>
             );
         }
@@ -101,7 +105,7 @@ const Home = () => {
                     <TabsTrigger value="forYou">Explore</TabsTrigger>
                     <TabsTrigger 
                         value="following"
-                        disabled={!currentUserInfo}
+                        // disabled={!currentUserInfo}
                     >
                         Following
                     </TabsTrigger>

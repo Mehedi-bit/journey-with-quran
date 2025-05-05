@@ -15,6 +15,7 @@ import HadithPage from "./components/pages/HadithPage"
 import { ThemeProvider } from "next-themes"
 import GuidePage from "./components/pages/GuidePage"
 import SuggestedUsersPage from "./components/pages/SuggestedUsersPage"
+import WelcomeModal from "./components/common/WelcomeModal"
 
 
 
@@ -70,6 +71,7 @@ function App() {
             
 
 
+          <WelcomeModal />
 
       </div>
 
