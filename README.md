@@ -1,32 +1,31 @@
-```markdown
 # JourneyWithQuran.com ✨📖
 
 [🌐 Live Site](https://journeywithquran.com) | [💻 GitHub Repository](https://github.com/Mehedi-bit/journey-with-quran)
 
-**JourneyWithQuran** is a reflective, community-based platform where users can share personal insights, reflections, and inspirations from their Quranic reading. It acts as an open **Quran journal** — a place for thought, learning, and mutual growth. Alongside reflections, the platform offers access to the **Quran**, **tafsir**, and **hadith** resources to deepen understanding and promote meaningful engagement with the words of Allah ﷻ.
+**JourneyWithQuran** is a reflective, community-based platform where users can share personal insights, reflections, and inspirations from their Quranic reading. It acts as an open **Quran journal** — a space for thought, learning, and mutual growth. Alongside reflections, the platform offers access to the **Quran**, **tafsir**, and **hadith** resources to deepen understanding and promote meaningful engagement with the words of Allah ﷻ.
 
 ---
 
 ## 🌟 Features
 
-- 📝 **Post Reflections** – Share your personal learnings and thoughts from your Quran reading.  
-- 📖 **Quran Integration** – Explore and search the Quran with ease.  
-- 📚 **Tafsir & Hadith Support** – Enrich your understanding with classical commentary and hadith sources.  
-- 👥 **Follow System** – Connect with other users, follow their journey, and build a reflection-driven community.  
-- 🔄 **Real-Time Data Updates** – Seamless consistency across all posts and profile updates.  
-- 🔐 **Secure Modular Backend** – Scalable backend built for growth and flexibility.  
+* 📝 **Post Reflections** – Share your personal learnings and thoughts from your Quran reading.
+* 📖 **Quran Integration** – Explore and search the Quran with ease.
+* 📚 **Tafsir & Hadith Support** – Enrich your understanding with classical commentary and hadith sources.
+* 👥 **Follow System** – Connect with other users, follow their journey, and build a reflection-driven community.
+* 🔄 **Real-Time Data Updates** – Seamless consistency across all posts and profile updates.
+* 🔐 **Secure Modular Backend** – Scalable backend built for growth and flexibility.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer       | Technology        |
-|-------------|-------------------|
-| Frontend    | React, TypeScript |
-| Backend     | Node.js, Express  |
-| Database    | MongoDB, Mongoose |
-| Language    | TypeScript        |
-| Tools       | Git, VS Code, Postman |
+| Layer    | Technology            |
+| -------- | --------------------- |
+| Frontend | React, TypeScript     |
+| Backend  | Node.js, Express      |
+| Database | MongoDB, Mongoose     |
+| Language | TypeScript            |
+| Tools    | Git, VS Code, Postman |
 
 ---
 
@@ -36,13 +35,13 @@
 journey-with-quran/
 ├── frontend-v2/               # React frontend
 │   └── src/
-│       └── components/
-│       └── pages/
+│       ├── components/
+│       ├── pages/
 │       └── utils/
 ├── backend/                   # Express backend
-│   └── controllers/
-│   └── models/
-│   └── routes/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
 │   └── middlewares/
 └── README.md
 ```
@@ -53,9 +52,9 @@ journey-with-quran/
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16+ recommended)  
-- [MongoDB](https://www.mongodb.com/)  
-- Git  
+* [Node.js](https://nodejs.org/) (v16+ recommended)
+* [MongoDB](https://www.mongodb.com/)
+* Git
 
 ### Installation
 
@@ -130,13 +129,13 @@ We welcome your contributions!
 
 ## 📜 License
 
-This project is open-sourced under the [MIT License](LICENSE).  
+This project is open-sourced under the [MIT License](LICENSE).
 Feel free to use, modify, and distribute.
 
 ---
 
-## 🧡 Special Thanks
+## Special Thanks
 
 To everyone exploring the Quran and sharing their reflections — may this platform be a means of continuous benefit and reward.
 
-![Thanks](https://ik.imagekit.io/mehedi004/Avatars/cat_thanks_gif.gif?updatedAt=1748274869810)
+![Thanks](https://ik.imagekit.io/mehedi004/Avatars/default2?updatedAt=1745075903036)
