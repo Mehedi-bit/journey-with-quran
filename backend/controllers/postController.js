@@ -342,7 +342,7 @@ const getAllPosts = async (req, res) => {
 
 
 
-// get all the posts which are tagged with asma (text have #asma or #Asma or #ASMA  or #আসমা #আছমা in it ) suppose post text has #asmaul - it should be included as #asma is in it, #আসমাউল also should be included as #আসমা is in it
+// get all the posts which are tagged with asma (text have #asma or #Asma or #ASMA  or #আসমা #আছমা in it ) 
 
 const getAsmaulHusnaPosts = async (req, res) => {
     try {
