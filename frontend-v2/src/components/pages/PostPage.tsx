@@ -253,55 +253,132 @@ const PostPage = () => {
 
     // function to style and format the text
 
+    // function formatPostText(text: string): JSX.Element[] {
+    //     const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|#[^\s]+|https?:\/\/[^\s]+)/g);
+      
+    //     return parts.map((part: string, index: number) => {
+    //       // **double-star** → bold + text-lg
+    //       if (part.startsWith("**") && part.endsWith("**")) {
+    //         return (
+    //           <strong key={index} className="font-bold text-black dark:text-white text-lg">
+    //             {part.slice(2, -2)}
+    //           </strong>
+    //         );
+    //       }
+      
+    //       // *single-star* → bold
+    //       if (part.startsWith("*") && part.endsWith("*")) {
+    //         return (
+    //           <strong key={index} className="font-bold text-black dark:text-white">
+    //             {part.slice(1, -1)}
+    //           </strong>
+    //         );
+    //       }
+      
+    //       // #hashtag → blue
+    //       if (part.startsWith("#")) {
+    //         return (
+    //           <span key={index} className="text-blue-400">
+    //             {part}
+    //           </span>
+    //         );
+    //       }
+      
+    //       // https://link → blue and clickable
+    //       if (part.startsWith("http://") || part.startsWith("https://")) {
+    //         return (
+    //           <a
+    //             key={index}
+    //             href={part}
+    //             target="_blank"
+    //             rel="noopener noreferrer"
+    //             className="text-blue-400 underline"
+    //           >
+    //             {part}
+    //           </a>
+    //         );
+    //       }
+      
+    //       // Default/plain text
+    //       return <span key={index}>{part}</span>;
+    //     });
+    // }
+
     function formatPostText(text: string): JSX.Element[] {
-        const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|#[^\s]+|https?:\/\/[^\s]+)/g);
-      
-        return parts.map((part: string, index: number) => {
-          // **double-star** → bold + text-lg
-          if (part.startsWith("**") && part.endsWith("**")) {
-            return (
-              <strong key={index} className="font-bold text-black dark:text-white text-lg">
-                {part.slice(2, -2)}
-              </strong>
-            );
-          }
-      
-          // *single-star* → bold
-          if (part.startsWith("*") && part.endsWith("*")) {
-            return (
-              <strong key={index} className="font-bold text-black dark:text-white">
-                {part.slice(1, -1)}
-              </strong>
-            );
-          }
-      
-          // #hashtag → blue
-          if (part.startsWith("#")) {
-            return (
-              <span key={index} className="text-blue-400">
-                {part}
-              </span>
-            );
-          }
-      
-          // https://link → blue and clickable
-          if (part.startsWith("http://") || part.startsWith("https://")) {
-            return (
-              <a
-                key={index}
-                href={part}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-400 underline"
-              >
-                {part}
-              </a>
-            );
-          }
-      
-          // Default/plain text
-          return <span key={index}>{part}</span>;
+        const lines = text.split(/\n/);
+
+        return lines.flatMap((line, lineIndex) => {
+            const trimmedLine = line.trim();
+
+            // ✅ Empty line → Add <br />
+            if (trimmedLine === "") {
+            return <br key={`br-${lineIndex}`} />;
+            }
+
+            const isBlockquote = trimmedLine.startsWith(">");
+            const content = isBlockquote ? trimmedLine.slice(1).trim() : line;
+
+            const parts = content.split(/(\*\*[^*]+\*\*|\*[^*]+\*|#[^\s]+|https?:\/\/[^\s]+)/g);
+
+            const formattedParts = parts.map((part, partIndex) => {
+            if (part.startsWith("**") && part.endsWith("**")) {
+                return (
+                <strong key={`${lineIndex}-${partIndex}`} className="font-bold text-neutral-900 dark:text-white text-lg">
+                    {part.slice(2, -2)}
+                </strong>
+                );
+            }
+
+            if (part.startsWith("*") && part.endsWith("*")) {
+                return (
+                <strong key={`${lineIndex}-${partIndex}`} className="font-bold text-neutral-900 dark:text-white">
+                    {part.slice(1, -1)}
+                </strong>
+                );
+            }
+
+            if (part.startsWith("#")) {
+                return (
+                <span key={`${lineIndex}-${partIndex}`} className="text-blue-700 dark:text-blue-400">
+                    {part}
+                </span>
+                );
+            }
+
+            if (part.startsWith("http://") || part.startsWith("https://")) {
+                return (
+                <a
+                    key={`${lineIndex}-${partIndex}`}
+                    href={part}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-700 dark:text-blue-400 underline"
+                >
+                    {part}
+                </a>
+                );
+        }
+
+        return <span key={`${lineIndex}-${partIndex}`}>{part}</span>;
         });
+
+        if (isBlockquote) {
+        return (
+            <blockquote
+            key={`blockquote-${lineIndex}`}
+            className="border-l-4 border-gray-400 pl-4 italic text-gray-600 dark:text-gray-300 my-2"
+            >
+            {formattedParts}
+            </blockquote>
+        );
+        }
+
+        return (
+        <p key={`line-${lineIndex}`} className="my-1">
+            {formattedParts}
+        </p>
+        );
+    });
     }
     
 

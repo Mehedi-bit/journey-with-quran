@@ -16,6 +16,8 @@ import { ThemeProvider } from "next-themes"
 import GuidePage from "./components/pages/GuidePage"
 import SuggestedUsersPage from "./components/pages/SuggestedUsersPage"
 import WelcomeModal from "./components/common/WelcomeModal"
+import { Button } from "./components/ui/button"
+import AsmaulHusna from "./components/pages/AsmaulHusna"
 
 
 
@@ -61,6 +63,7 @@ function App() {
 
 
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/asmaul-husna" element={<AsmaulHusna />} />
 
                 <Route path="*" element={<div className="text-center">Not Found</div>} />
 

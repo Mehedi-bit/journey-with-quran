@@ -342,6 +342,28 @@ const getAllPosts = async (req, res) => {
 
 
 
+// get all the posts which are tagged with asma (text have #asma or #Asma or #ASMA  or #আসমা #আছমা in it ) suppose post text has #asmaul - it should be included as #asma is in it, #আসমাউল also should be included as #আসমা is in it
+
+const getAsmaulHusnaPosts = async (req, res) => {
+    try {
+
+        const posts = await Post.find({
+            text: {
+                $regex: /#আসমা|#আছমা|#asma|#Asma|#ASMA/i
+            }
+        }).sort({ createdAt: -1 })
+          .populate("postedBy", "_id name username profilePic")
+          .populate("replies.userId", "_id name username profilePic")
+
+        // send a response
+        res.status(200).json(posts)
+
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+        console.log("Error from getAsmaulHusnaPosts controller: ", err.message)
+    }
+}
+
 
 
 const getUserPosts = async (req, res) => {
@@ -385,4 +407,5 @@ module.exports = {
     getAllPosts,
     getUserPosts,
     deleteComment,
+    getAsmaulHusnaPosts,
 }

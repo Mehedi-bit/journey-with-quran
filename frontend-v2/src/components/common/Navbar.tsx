@@ -117,7 +117,7 @@ const Navbar = ({
           title: "Asma ul Husna",
           description: "Learn and Live by Allah’s beautiful names, and get into Jannah",
           icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
+          url: "/asmaul-husna",
         },
         {
           title: "Dua & Azkar",
