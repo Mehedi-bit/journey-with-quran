@@ -1,23 +1,21 @@
-# JourneyWithQuran.com ✨📖
-
-[🌐 Live Site](https://journeywithquran.com) | [💻 GitHub Repository](https://github.com/Mehedi-bit/journey-with-quran)
+# JourneyWithQuran.com
 
 **JourneyWithQuran** is a reflective, community-based platform where users can share personal insights, reflections, and inspirations from their Quranic reading. It acts as an open **Quran journal** — a space for thought, learning, and mutual growth. Alongside reflections, the platform offers access to the **Quran**, **tafsir**, and **hadith** resources to deepen understanding and promote meaningful engagement with the words of Allah ﷻ.
 
 ---
 
-## 🌟 Features
+## Features
 
-* 📝 **Post Reflections** – Share your personal learnings and thoughts from your Quran reading.
-* 📖 **Quran Integration** – Explore and search the Quran with ease.
-* 📚 **Tafsir & Hadith Support** – Enrich your understanding with classical commentary and hadith sources.
-* 👥 **Follow System** – Connect with other users, follow their journey, and build a reflection-driven community.
-* 🔄 **Real-Time Data Updates** – Seamless consistency across all posts and profile updates.
-* 🔐 **Secure Modular Backend** – Scalable backend built for growth and flexibility.
+* **Post Reflections** – Share your personal learnings and thoughts from your Quran reading.
+* **Quran Integration** – Explore and search the Quran with ease.
+* **Tafsir & Hadith Support** – Enrich your understanding with classical commentary and hadith sources.
+* **Follow System** – Connect with other users, follow their journey, and build a reflection-driven community.
+* **Real-Time Data Updates** – Seamless consistency across all posts and profile updates.
+* **Secure Modular Backend** – Scalable backend built for growth and flexibility.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer    | Technology            |
 | -------- | --------------------- |
@@ -29,7 +27,7 @@
 
 ---
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 journey-with-quran/
@@ -48,7 +46,7 @@ journey-with-quran/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -103,16 +101,16 @@ journey-with-quran/
 
 ---
 
-## 🔧 Backend Highlights
+## Backend Highlights
 
-* ✅ **Atomic Updates:** MongoDB transactions used for critical operations like follow/unfollow.
-* 🔁 **Auto Propagation:** Profile changes automatically update across all posts and replies.
-* ⚡ **Efficient Bulk Operations:** Handles large-scale data changes without compromising performance.
-* 🛡️ **Robust Error Handling:** Ensures stability and reliability during all critical flows.
+* **Atomic Updates:** MongoDB transactions used for critical operations like follow/unfollow.
+* **Auto Propagation:** Profile changes automatically update across all posts and replies.
+* **Efficient Bulk Operations:** Handles large-scale data changes without compromising performance.
+* **Robust Error Handling:** Ensures stability and reliability during all critical flows.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome your contributions!
 
@@ -125,12 +123,6 @@ We welcome your contributions!
 
 > Please follow clean code principles and include helpful comments.
 
----
-
-## 📜 License
-
-This project is open-sourced under the [MIT License](LICENSE).
-Feel free to use, modify, and distribute.
 
 ---
 
@@ -138,4 +130,4 @@ Feel free to use, modify, and distribute.
 
 To everyone exploring the Quran and sharing their reflections — may this platform be a means of continuous benefit and reward.
 
-![Thanks](https://ik.imagekit.io/mehedi004/Avatars/default2?updatedAt=1745075903036)
+![Thanks](https://ik.imagekit.io/mehedi004/Avatars/duhaa.webp?updatedAt=1748276326309)
