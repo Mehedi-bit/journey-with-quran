@@ -17,16 +17,13 @@ import { serverUrl } from "@/serverUrl"
 import { userAtom } from "@/atoms/userAtom"
 import { Loader2Icon } from "lucide-react"
 
-
 export function SignUpCard({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-
   const setAuthState = useSetRecoilState(authStateAtom)
   const setUserInfoAtom = useSetRecoilState(userAtom)
 
-  // get user input from the frontend form
   const [inputs, setInputs] = useState({
     name: "",
     username: "",
@@ -34,122 +31,110 @@ export function SignUpCard({
     password: "",
   })
 
-
-  const [loading, setLoading] = useState(false) 
-
-
-
-  // function to handle sign up from server
+  const [loading, setLoading] = useState(false)
 
   const handleSignUp = async () => {
-
-    
     try {
-
-      // set loading
       setLoading(true)
+      
+      // Trim inputs and validate
+      const trimmedName = inputs.name.trim()
+      const trimmedUsername = inputs.username.trim()
+      const trimmedEmail = inputs.email.trim()
+      const password = inputs.password
 
+      // Validate spaces
+      if (trimmedUsername.includes(' ')) {
+        toast.error("Username cannot contain spaces")
+        setLoading(false)
+        return
+      }
 
-      // server actions
+      if (trimmedEmail.includes(' ')) {
+        toast.error("Email cannot contain spaces")
+        setLoading(false)
+        return
+      }
+
+      if (password.includes(' ')) {
+        toast.error("Password cannot contain spaces")
+        setLoading(false)
+        return
+      }
+
       const res = await fetch(`${serverUrl}/api/users/signup`, {
         method: "POST",
-        credentials: "include", // ✅ SEND COOKIE
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(inputs)
+        body: JSON.stringify({
+          name: trimmedName,
+          username: trimmedUsername,
+          email: trimmedEmail,
+          password: password,
+        }),
       })
 
       const data = await res.json()
 
-
       if (data.error) {
-
-        toast(data.error, {
-          description: "Please try again",
-          action: {
-            label: "Okay",
-            onClick: () => console.log("Okay"),
-          },
-        })
-
-        // reset loading
+        toast.error(data.error)
         setLoading(false)
-
-        return   // not to proceed further if error
+        return
       }
 
-      // otherwise success
       localStorage.setItem("user-info", JSON.stringify(data))
       setUserInfoAtom(data)
 
-      toast("Sign up successful", {
-          // show full dayname and time with date
-          description: "You signed up on " + new Date().toLocaleString(),
-          action: {
-            label: "Thanks",
-            onClick: () => console.log("Thanks"),
-          },
-          
+      toast.success("Sign up successful", {
+        description: "You signed up on " + new Date().toLocaleString(),
       })
       
-
-
-      
     } catch (error) {
-      
-      toast("Error " + error + " error")
-      
+      toast.error("Error: " + error)
+    } finally {
+      setLoading(false)
     }
-
-
-
   }
-
-
-
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Sign up</CardTitle>
-          <CardDescription>
-            Sign up to your account
-          </CardDescription>
+          <CardDescription>Sign up to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form 
-            onSubmit={(e) => {
-              e.preventDefault()
-              console.log("sign up form submitted")
-            }}
-          >
+          <form onSubmit={(e) => e.preventDefault()}>
             <div className="flex flex-col gap-6">
               <div className="flex gap-2">
                 <div>
-                    <Label htmlFor="name">Full name</Label>
-                    <Input
+                  <Label htmlFor="name">Full name</Label>
+                  <Input
                     id="name"
                     type="text"
                     placeholder="full name"
                     required
                     onChange={(e) => setInputs({...inputs, name: e.target.value})}
-                    />
-                    <small className="text-xs text-gray-400">full name appreciated</small>
+                  />
+                  <small className="text-xs text-gray-400">full name appreciated</small>
                 </div>
                 <div>
-                    <Label htmlFor="username">Username</Label>
-                    <Input
+                  <Label htmlFor="username">Username</Label>
+                  <Input
                     id="username"
                     type="text"
                     placeholder="unique_username"
                     required
                     onChange={(e) => setInputs({...inputs, username: e.target.value})}
-                    />
+                  />
+                  {inputs.username.trim().includes(' ') ? (
+                    <small className="text-xs text-red-500">Username cannot contain spaces</small>
+                  ) : (
                     <small className="text-xs text-gray-400">username needs to be unique</small>
+                  )}
                 </div>
-                
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -160,14 +145,14 @@ export function SignUpCard({
                   required
                   onChange={(e) => setInputs({...inputs, email: e.target.value})}
                 />
+                {inputs.email.trim().includes(' ') && (
+                  <small className="text-xs text-red-500">Email cannot contain spaces</small>
+                )}
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
+                  <a href="#" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
                     Forgot your password?
                   </a>
                 </div>
@@ -177,28 +162,28 @@ export function SignUpCard({
                   required 
                   onChange={(e) => setInputs({...inputs, password: e.target.value})}
                 />
+                {inputs.password.includes(' ') && (
+                  <small className="text-xs text-red-500">Password cannot contain spaces</small>
+                )}
               </div>
-              <Button type="submit" className="w-full"
+              <Button 
+                type="submit" 
+                className="w-full"
                 onClick={handleSignUp}
+                disabled={loading}
               >
-                {
-                  loading ? <Loader2Icon size={16} className="animate-spin" /> 
-                  : "Sign up"
-                }
+                {loading ? <Loader2Icon size={16} className="animate-spin" /> : "Sign up"}
               </Button>
-              {/* <Button variant="outline" className="w-full">
-                Login with Google
-              </Button> */}
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Already have an account?{" "}
-              <a href="#" className="underline underline-offset-4"
-
-                onClick={()=> setAuthState("login")}
-
-              >
-                Login
-              </a>
+              <div className="mt-4 text-center text-sm">
+                Already have an account?{" "}
+                <a 
+                  href="#" 
+                  className="underline underline-offset-4"
+                  onClick={() => setAuthState("login")}
+                >
+                  Login
+                </a>
+              </div>
             </div>
           </form>
         </CardContent>
