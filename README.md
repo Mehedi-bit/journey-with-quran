@@ -1,6 +1,6 @@
-# JourneyWithQuran.com
+# Journey with Quran
 
-**JourneyWithQuran** is a reflective, community-based platform where users can share personal insights, reflections, and inspirations from their Quranic reading. It acts as an open **Quran journal** — a space for thought, learning, and mutual growth. Alongside reflections, the platform offers access to the **Quran**, **tafsir**, and **hadith** resources to deepen understanding and promote meaningful engagement with the words of Allah ﷻ.
+**Journey with Quran** is a reflective, community-based platform where users can share personal insights, reflections, and inspirations from their Quranic reading. It acts as an open **Quran journal** — a space for thought, learning, and mutual growth. Alongside reflections, the platform offers access to the **Quran**, **tafsir**, and **hadith** resources to deepen understanding and promote meaningful engagement with the words of Allah ﷻ.
 
 ---
 
@@ -50,8 +50,8 @@ journey-with-quran/
 
 ### Prerequisites
 
-* [Node.js](https://nodejs.org/) (v16+ recommended)
-* [MongoDB](https://www.mongodb.com/)
+* Node.js (v16+ recommended)
+* MongoDB
 * Git
 
 ### Installation
@@ -77,7 +77,7 @@ journey-with-quran/
 
 3. **Environment setup**
 
-   Create `.env` files in both `backend/` and `frontend-v2/` with the necessary keys.
+   Create `.env` files in `backend/` with the necessary keys.
 
    **Backend `.env` example:**
 
@@ -85,6 +85,10 @@ journey-with-quran/
    PORT=5000
    MONGO_URI=your_mongodb_uri
    JWT_SECRET=your_jwt_secret
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+   NODE_ENV=development
    ```
 
 4. **Run development servers**
