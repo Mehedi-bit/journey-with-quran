@@ -44,6 +44,29 @@ const PostCreateSurface: React.FC<PostCreatorProps> = ({ currentUserInfo, isAsma
     }
   }, [showLoginWarning]);
 
+  // New helper function to clean the post content
+  const cleanPostText = (text: string) => {
+    const lines = text.split("\n");
+
+    // Remove trailing empty lines
+    while (lines.length && lines[lines.length - 1].trim() === "") {
+      lines.pop();
+    }
+
+    // If hashtags are found at the end, remove any empty lines right before them
+    const hashIndex = lines.findLastIndex(line => line.trim().startsWith("#"));
+    if (hashIndex !== -1) {
+      // Remove any empty lines right before the hashtag lines
+      let i = hashIndex - 1;
+      while (i >= 0 && lines[i].trim() === "") {
+        lines.splice(i, 1);
+        i--;
+      }
+    }
+
+    return lines.join("\n");
+  };
+
   const handleCreatePost = async () => {
     if (!currentUserInfo) {
       toast("Please login to create a post");
@@ -56,9 +79,10 @@ const PostCreateSurface: React.FC<PostCreatorProps> = ({ currentUserInfo, isAsma
       return;
     }
 
-    let textToSend = content;
+    let textToSend = cleanPostText(content);
+
     // Auto-add tag for AsmaulHusna page
-    if (isAsmaPage && !/#[Aa]smaul[_-]?husna/i.test(content)) {
+    if (isAsmaPage && !/#[Aa]smaul[_-]?husna/i.test(textToSend)) {
       textToSend = textToSend.trimEnd() + "\n\n#asmaul_husna";
     }
 
@@ -95,13 +119,13 @@ const PostCreateSurface: React.FC<PostCreatorProps> = ({ currentUserInfo, isAsma
   return (
     <Card className="w-full p-4 bg-card mb-3">
       <div className="flex items-start gap-4">
-        <Avatar className="h-10 w-10 border cursor-pointer" onClick={e => {
+        <Avatar className="h-10 w-10 border border-gray-400 cursor-pointer" onClick={e => {
           e.preventDefault();
           if (!currentUserInfo) navigate("/auth");
           else navigate(`/${currentUserInfo.username}`);
         }}>
-          <AvatarImage src={currentUserInfo?.profilePic} alt="User" />
-          <AvatarFallback><UserRoundSearch/></AvatarFallback>
+          <AvatarImage className="object-cover" src={currentUserInfo?.profilePic} alt="User" />
+          <AvatarFallback><UserRoundSearch /></AvatarFallback>
         </Avatar>
 
         <div className="flex-1">
@@ -135,18 +159,18 @@ const PostCreateSurface: React.FC<PostCreatorProps> = ({ currentUserInfo, isAsma
 
           <div className="flex items-center justify-between">
             <div className="flex gap-2">
-              <Button variant="outline" size="icon" onClick={() => toast.info("Use verse tab to visualize any quote.")}> <ImageIcon size={16}/> </Button>
-              <Button variant="outline" size="icon" onClick={() => toast.info("Attach any important link with your post.")}> <Link size={16}/> </Button>
+              <Button variant="outline" size="icon" onClick={() => toast.info("Use verse tab to visualize any quote.")}> <ImageIcon size={16} /> </Button>
+              <Button variant="outline" size="icon" onClick={() => toast.info("Attach any important link with your post.")}> <Link size={16} /> </Button>
               <Button variant="outline" size="icon" onClick={() => toast(
                 <div>
-                  <strong>Bold:</strong> *text* <br/>
-                  <strong>Extra bold:</strong> **text** <br/>
-                  <strong>Blockquote:</strong> {">"} line <br/>
+                  <strong>Bold:</strong> *text* <br />
+                  <strong>Extra bold:</strong> **text** <br />
+                  <strong>Blockquote:</strong> {">"} line <br />
                 </div>
-              )}> <BookA size={16}/> </Button>
+              )}> <BookA size={16} /> </Button>
             </div>
             <Button onClick={handleCreatePost} className="bg-primary hover:bg-primary/90">
-              {loading ? <Loader2 className="animate-spin mx-auto" size={16}/> : <><Send size={16}/> Share</>}
+              {loading ? <Loader2 className="animate-spin mx-auto" size={16} /> : <><Send size={16} /> Share</>}
             </Button>
           </div>
         </div>

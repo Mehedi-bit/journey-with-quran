@@ -369,7 +369,7 @@ const updateUser = async (req, res) => {
                 $set: {
                     "replies.$[reply].username": user.username,
                     "replies.$[reply].name": user.name,
-                    "replies.$[reply].profilePic": user.profilePic
+                    "replies.$[reply].userProfilePic": user.profilePic
                 }
             },
 
