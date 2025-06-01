@@ -13,13 +13,14 @@ import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 
 import ayahBgPic from "../../assets/ayah_bg.png";
+
 import { useRecoilState, useRecoilValue } from "recoil";
 import { userAtom } from "@/atoms/userAtom";
 import postsAtom from "@/atoms/postsAtom";
+
 import { PostDropDownMenu } from "./PostDropdownMenu";
 import { serverUrl } from "@/serverUrl";
 
-// Define the props for PostCard
 interface PostCardProps {
   post: {
     _id: string;
@@ -44,30 +45,25 @@ interface PostCardProps {
   postedBy: string;
 }
 
-// Truncation character limit
 const MAX_CHAR_COUNT = 300;
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
-  // Declare showMore state at the top so it can be used safely below
   const [showMore, setShowMore] = useState(false);
-
   const currentUser = useRecoilValue(userAtom);
   const [liked, setLiked] = useState(post.likes.includes(currentUser?._id));
   const [liking, setLiking] = useState(false);
   const [posts, setPosts] = useRecoilState(postsAtom);
   const navigate = useNavigate();
 
-  // Handler to like/unlike a post
   const handleLike = async () => {
     if (!currentUser) {
       toast("Please login to like this post");
       navigate("/auth");
       return;
     }
-
     if (liking) return;
-
     setLiking(true);
+
     try {
       const res = await fetch(`${serverUrl}/api/posts/like/${post._id}`, {
         method: "PUT",
@@ -76,15 +72,13 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           "Content-Type": "application/json",
         },
       });
-
       const data = await res.json();
-
       if (!res.ok || data.error) {
         toast(data.error);
         return;
       }
 
-      // Update likes locally
+      // Update global posts state
       const updated = posts.map((p) =>
         p._id === post._id
           ? {
@@ -95,7 +89,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             }
           : p
       );
-
       setPosts(updated);
       setLiked(!liked);
     } catch (error) {
@@ -105,7 +98,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     }
   };
 
-  // Format the post text by parsing bold, hashtags, links, and blockquotes
+  // Format the post text with markdown-like formatting and preserve line breaks
   function formatPostText(text: string): JSX.Element[] {
     const lines = text.split(/\n/);
 
@@ -159,18 +152,14 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         return <span key={`${i}-${j}`}>{part}</span>;
       });
 
-      if (isQuote) {
-        return (
-          <blockquote
-            key={`bq-${i}`}
-            className="border-l-4 border-gray-400 pl-4 italic text-gray-600 dark:text-gray-300 my-2"
-          >
-            {elems}
-          </blockquote>
-        );
-      }
-
-      return (
+      return isQuote ? (
+        <blockquote
+          key={`bq-${i}`}
+          className="border-l-4 border-gray-400 pl-4 italic text-gray-600 dark:text-gray-300 my-2"
+        >
+          {elems}
+        </blockquote>
+      ) : (
         <p key={`p-${i}`} className="my-1">
           {elems}
         </p>
@@ -178,35 +167,39 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     });
   }
 
-  // Helper: Truncate text by words without cutting a word mid-way,
-  // and if truncated, add ".." at the end before "see more"
-  function truncateByLines(text: string, maxChars: number) {
+  // Truncate text preserving line breaks without cutting mid-line
+  function truncatePreservingLineBreaks(text: string, maxChars: number): string {
     if (text.length <= maxChars) return text;
 
-    // Take a substring with maxChars first
-    let subText = text.slice(0, maxChars);
+    let count = 0;
+    let result = "";
 
-    // If the next character after maxChars is not a space,
-    // extend the substring until the next space or end of text
-    if (text.charAt(maxChars) !== " " && text.length > maxChars) {
-      const nextSpaceIndex = text.indexOf(" ", maxChars);
-      if (nextSpaceIndex !== -1) {
-        subText = text.slice(0, nextSpaceIndex);
-      } else {
-        // No next space found, take full text
-        subText = text;
-      }
+    for (const line of text.split("\n")) {
+      if (count + line.length + 1 > maxChars) break;
+      result += line + "\n";
+      count += line.length + 1;
     }
 
-    // Trim any trailing spaces, then add ".."
-    return subText.trimEnd() + "..";
+    if (!result) {
+      // fallback to word truncation if first line too long
+      const words = text.split(/\s+/);
+      let truncated = "";
+      for (const word of words) {
+        if ((truncated + " " + word).length > maxChars) break;
+        truncated += (truncated ? " " : "") + word;
+      }
+      return truncated + "..";
+    }
+
+    return result.trimEnd() + "..";
   }
 
-  // Determine if post text is long and truncate accordingly
-  const isLong = post.text.length > MAX_CHAR_COUNT;
-  const displayedText = showMore ? post.text : truncateByLines(post.text, MAX_CHAR_COUNT);
+  const fullTextTrimmed = post.text.trimEnd();
+  const isLong = fullTextTrimmed.length > MAX_CHAR_COUNT;
+  const truncated = truncatePreservingLineBreaks(fullTextTrimmed, MAX_CHAR_COUNT);
+  const shouldShowMore = isLong && truncated !== fullTextTrimmed;
+  const displayedText = showMore ? fullTextTrimmed : truncated;
 
-  // Navigate to comments section of the post
   const goToComments = () =>
     navigate(`/${post.postedBy.username}/post/${post._id}?scrollToComments=true`);
 
@@ -222,7 +215,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         >
           <img
             src={post.postedBy.profilePic || fallbackAvatar}
-            alt="User avatar"
+            alt="user avatar"
             className="h-10 w-10 rounded-full object-cover border border-gray-700 p-0.5"
           />
           <div>
@@ -238,6 +231,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </div>
       </CardHeader>
 
+      {/* Text content container preserving your design */}
       <CardContent
         className="cursor-pointer"
         onClick={() => navigate(`/${post.postedBy.username}/post/${post._id}`)}
@@ -245,8 +239,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <div className="bangla-text whitespace-pre-wrap text-neutral-900 dark:text-neutral-200">
           {formatPostText(displayedText)}
 
-          {/* Show "see more" link if text is long and user hasn't expanded */}
-          {!showMore && isLong && (
+          {/* Show see more link only if truncated and not currently expanded */}
+          {!showMore && shouldShowMore && (
             <span
               onClick={(e) => {
                 e.preventDefault();
@@ -261,7 +255,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </div>
       </CardContent>
 
-      {/* Extra section (like an Ayah with background) */}
+      {/* Optional extra content */}
       {post.extra && (
         <CardContent>
           <div className="relative w-full">
@@ -282,6 +276,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
       <Separator />
 
+      
+      
       {/* Like, comment, share buttons */}
       <div className="flex justify-between px-[5%] py-2">
         <div className="flex items-center gap-1" onClick={handleLike}>
@@ -299,6 +295,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </div>
         <Share2 size={20} className="cursor-pointer" />
       </div>
+
     </Card>
   );
 };
